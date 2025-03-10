@@ -1,0 +1,64 @@
+import { Inject } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { createBadRequestException } from '@wings-online/common';
+import {
+  ILegacyOrderService,
+  IOrderReadRepository,
+} from '@wings-online/order/interfaces';
+import {
+  DEFAULT_CANCEL_DURATION,
+  LEGACY_ORDER_SERVICE,
+  ORDER_READ_REPOSITORY,
+} from '@wings-online/order/order.constants';
+import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
+import { ParameterService } from '@wings-online/parameter/parameter.service';
+import { InjectPinoLogger, PinoLogger } from '@wo-sdk/nest-pino-logger';
+
+import { GetOrderInfoQuery } from './get-order-info.query';
+import { GetOrderInfoResult } from './get-order-info.result';
+
+@QueryHandler(GetOrderInfoQuery)
+export class GetOrderInfoHandler
+  implements IQueryHandler<GetOrderInfoQuery, GetOrderInfoResult>
+{
+  constructor(
+    @InjectPinoLogger(GetOrderInfoHandler.name)
+    readonly logger: PinoLogger,
+    @Inject(ORDER_READ_REPOSITORY)
+    readonly repository: IOrderReadRepository,
+    @Inject(LEGACY_ORDER_SERVICE)
+    private readonly legacyOrderService: ILegacyOrderService,
+    private readonly parameterService: ParameterService,
+  ) {}
+
+  async execute(query: GetOrderInfoQuery): Promise<GetOrderInfoResult> {
+    this.logger.trace(`BEGIN`);
+    this.logger.info({ query });
+
+    const { id, identity } = query;
+
+    const isCustomerDummy = await this.legacyOrderService.isCustomerDummy(
+      identity.externalId,
+    );
+
+    const orders = await this.repository.getOrderInfo(
+      identity,
+      id,
+      isCustomerDummy,
+    );
+
+    if (!orders) throw createBadRequestException('order-not-found');
+
+    const cancelDurationParameter = await this.parameterService.getOne(
+      ParameterKeys.CANCEL_DURATION,
+    );
+
+    const cancelDuration = cancelDurationParameter
+      ? Number(cancelDurationParameter.value)
+      : DEFAULT_CANCEL_DURATION;
+
+    orders.setCancellationDuration(cancelDuration);
+
+    return new GetOrderInfoResult(orders);
+  }
+}

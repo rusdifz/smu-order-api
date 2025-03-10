@@ -1,0 +1,224 @@
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+default:
+  image: node:18-bullseye-slim
+  before_script:
+    - yarn install --frozen-lockfile --cache-folder .yarn
+
+.node_modules-cache: &node_modules-cache
+  key:
+    files:
+      - yarn.lock
+  paths:
+    - node_modules
+  policy: pull
+
+.yarn-cache: &yarn-cache
+  key: yarn-$CI_COMMIT_BRANCH
+  paths:
+    - .yarn
+  policy: pull
+
+.on_merge_request: &on_merge_request
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+.on_default_branch: &on_default_branch
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+.on_staging_branch: &on_staging_branch
+  - if: '$CI_COMMIT_BRANCH == "staging"'
+
+.aws_prep: &aws_prep
+  - |
+    if [ -z $CI_OIDC_AUDIENCE ]; then
+      echo "Please set up a CI_OIDC_AUDIENCE variable to your CI job"
+    fi
+    if [ -z $CI_ROLE_ARN ]; then
+      echo "Please set up a CI_ROLE_ARN variable to your CI job"
+    fi
+    mkdir -p ~/.aws
+    echo "${OIDC}" > /tmp/web_identity_token
+    echo -e "[default]\nrole_arn=${CI_ROLE_ARN}\nweb_identity_token_file=/tmp/web_identity_token" > ~/.aws/config
+
+.push_to_ecr:
+  image:
+    name: amazon/aws-cli
+    entrypoint: ['']
+  services:
+    - docker:dind
+  stage: deploy
+  id_tokens:
+    OIDC:
+      aud: $CI_OIDC_AUDIENCE
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
+  before_script:
+    - *aws_prep
+    - yum update -y && yum install -y jq
+    - amazon-linux-extras install docker
+    - aws --version
+    - docker info
+  script:
+    - ./ci/bin/build
+
+.update_ecs:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy
+  id_tokens:
+    OIDC:
+      aud: $CI_OIDC_AUDIENCE
+  before_script:
+    - *aws_prep
+    - aws --version
+  script:
+    - ./ci/bin/ecs update-task-definition
+
+install:
+  stage: install
+  interruptible: true
+  before_script:
+    - echo 'installing dependencies...'
+  script:
+    - yarn install --frozen-lockfile --cache-folder .yarn
+  cache:
+    - <<: *node_modules-cache
+      policy: pull-push # override the policy
+    - <<: *yarn-cache # This is not required if your internet speed is good or if you use a local npm registry.
+      policy: pull-push # override the policy
+  rules:
+    - if: '$FORCE_INSTALL'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        paths:
+          - yarn.lock
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        paths:
+          - yarn.lock
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+      changes:
+        paths:
+          - yarn.lock
+
+lint:
+  stage: test
+  interruptible: true
+  script:
+    - yarn lint
+  cache:
+    - <<: *node_modules-cache
+    - <<: *yarn-cache
+  rules:
+    - *on_merge_request
+
+tsc:
+  stage: test
+  script:
+    - yarn tsc
+  cache:
+    - <<: *node_modules-cache
+    - <<: *yarn-cache
+  rules:
+    - *on_merge_request
+
+# unit_test:
+#   stage: test
+#   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+#   script:
+#     - yarn test:ci
+#   rules:
+#     - *on_default_branch
+#     - *on_merge_request
+#   artifacts:
+#     paths:
+#       - coverage/
+#     when: always
+#     reports:
+#       junit: [jest-junit.xml]
+#       coverage_report:
+#         coverage_format: cobertura
+#         path: coverage/cobertura-coverage.xml
+
+# pages:
+#   stage: test
+#   needs: ['unit_test']
+#   script:
+#     - mkdir public
+#     - cp -r coverage/* public
+#   artifacts:
+#     paths:
+#       - public
+#   rules:
+#     - *on_default_branch
+
+# Development
+build_dev:
+  stage: build
+  script:
+    - yarn build
+  cache:
+    - <<: *node_modules-cache
+    - <<: *yarn-cache
+  artifacts:
+    paths:
+      - dist/
+  rules:
+    - *on_default_branch
+
+push_to_ecr_dev:
+  extends: .push_to_ecr
+  environment:
+    name: development
+    action: prepare
+  resource_group: development
+  dependencies:
+    - build_dev
+  rules:
+    - *on_default_branch
+
+update_ecs_dev:
+  extends: .update_ecs
+  environment: development
+  resource_group: development
+  needs: ['push_to_ecr_dev']
+  rules:
+    - *on_default_branch
+
+# Staging
+build_stage:
+  stage: build
+  script:
+    - yarn build
+  cache:
+    - <<: *node_modules-cache
+    - <<: *yarn-cache
+  artifacts:
+    paths:
+      - dist/
+  rules:
+    - *on_staging_branch
+
+push_to_ecr_stage:
+  extends: .push_to_ecr
+  environment:
+    name: staging
+    action: prepare
+  resource_group: staging
+  dependencies:
+    - build_stage
+  rules:
+    - *on_staging_branch
+
+update_ecs_stage:
+  extends: .update_ecs
+  environment: staging
+  resource_group: staging
+  needs: ['push_to_ecr_stage']
+  rules:
+    - *on_staging_branch

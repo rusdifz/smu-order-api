@@ -1,0 +1,94 @@
+import { ValidationOptions } from 'joi';
+
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HealthModule, TypeOrmPinoLogger } from '@wings-online/common';
+import { MutexModule } from '@wo-sdk/nest-advisory-lock-mutex';
+import { AuthModule } from '@wo-sdk/nest-auth';
+import { EventBusModule } from '@wo-sdk/nest-event-bus';
+import { LoggerModule, XRayLogger } from '@wo-sdk/nest-pino-logger';
+import { TracingModule, XRAY_CLIENT } from '@wo-sdk/nest-xray';
+
+import { EVENTBRIDGE_CLIENT_TOKEN, S3_CLIENT_TOKEN } from './app.constants';
+import { AuthService } from './auth';
+import { configSchema } from './config';
+import { InvoiceModule } from './invoice';
+import { OrderModule } from './order';
+import { ParameterModule } from './parameter/parameter.module';
+import { ParameterService } from './parameter/parameter.service';
+import {
+  AuthModuleOptionsProvider,
+  EventBridgeClientFactoryProvider,
+  EventBusFactoryProvider,
+  S3ClientFactoryProvider,
+  TypeOrmModuleOptionsProvider,
+} from './providers';
+
+@Module({
+  imports: [
+    CqrsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: configSchema,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: false,
+      } as ValidationOptions,
+    }),
+    TracingModule.forRootAsync({
+      inject: [XRayLogger],
+      useFactory: (logger: XRayLogger) => ({
+        logger,
+      }),
+    }),
+    LoggerModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService, TypeOrmPinoLogger, XRAY_CLIENT],
+      extraProviders: [TypeOrmPinoLogger],
+      useClass: TypeOrmModuleOptionsProvider,
+    }),
+    MutexModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connectionString: config.getOrThrow('PG_DATABASE_WRITE_URL'),
+      }),
+    }),
+    EventBusModule.forRootAsync({
+      inject: [ConfigService, EVENTBRIDGE_CLIENT_TOKEN, S3_CLIENT_TOKEN],
+      useFactory: EventBusFactoryProvider,
+      extraProviders: [
+        {
+          provide: EVENTBRIDGE_CLIENT_TOKEN,
+          inject: [ConfigService],
+          useFactory: EventBridgeClientFactoryProvider,
+        },
+        {
+          provide: S3_CLIENT_TOKEN,
+          inject: [ConfigService],
+          useFactory: S3ClientFactoryProvider,
+        },
+      ],
+    }),
+    AuthModule.forRootAsync({
+      inject: [ConfigService],
+      useClass: AuthModuleOptionsProvider,
+      extraProviders: [AuthService],
+    }),
+    OrderModule,
+    HealthModule,
+    InvoiceModule,
+    ParameterModule.forRoot(),
+    ScheduleModule.forRoot(),
+  ],
+  providers: [],
+})
+export class AppModule implements OnApplicationBootstrap {
+  constructor(private readonly parameterService: ParameterService) {}
+
+  async onApplicationBootstrap() {
+    await this.parameterService.loadParameters();
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.tsdk": "node_modules\\typecript\\lib",
+  "sqltools.connections": [
+    {
+      "previewLimit": 10,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "group": "Wings",
+      "name": "local (docker)",
+      "database": "wingsdb",
+      "username": "wingsdb_user",
+      "password": "p4ssw0rd"
+    },
+    {
+      "previewLimit": 50,
+      "server": "wingsonline-development-nri-instance-1.csdu0vxoeefp.ap-southeast-1.rds.amazonaws.com",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "development",
+      "group": "Wings",
+      "database": "wingsdb_dev",
+      "username": "postgres",
+      "password": "password123"
+    }
+  ],
+  "[sql]": {
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+  },
+  "jest.runMode": "on-demand",
+  "jest.coverageFormatter": "GutterFormatter",
+  "jest.monitorLongRun": 180000
+}

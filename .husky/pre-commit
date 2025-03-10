@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if [ -t 2 ]; then
+  exec >/dev/tty 2>&1
+fi
+
+echo "Running pre-commit hooks..."
+
+echo "Running lint-staged... ✂️"
+npx lint-staged
+echo "Linting Passed... 🎉"

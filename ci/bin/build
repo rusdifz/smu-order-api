@@ -1,0 +1,50 @@
+#!/bin/bash -e
+if [ -z "$DOCKER_REGISTRY" ]; then
+  echo "Please set up a DOCKER_REGISTRY variable to your CI job with the url of the docker registry you are using."
+  exit 1
+fi
+
+if [ -z "$IMAGE_NAME" ]; then
+  echo "Please set up a IMAGE_NAME variable to your CI job with the name of the docker image you are going to build."
+  exit 1
+fi
+
+if [[ -n "${DOCKERFILE_PATH}" ]]; then
+  echo "Building Dockerfile-based application using '${DOCKERFILE_PATH}'..."
+else
+  export DOCKERFILE_PATH="Dockerfile"
+  echo "Building Dockerfile-based application..."
+fi
+
+if [[ ! -f "${DOCKERFILE_PATH}" ]]; then
+  echo "Unable to find '${DOCKERFILE_PATH}'. Exiting..." >&2
+  exit 1
+fi
+
+if [[ -z "$CI_COMMIT_TAG" ]]; then
+  image_tag="latest"
+else
+  image_tag=$CI_COMMIT_TAG
+fi
+
+image_tagged="$DOCKER_REGISTRY/$IMAGE_NAME:$image_tag"
+image_latest="$DOCKER_REGISTRY/$IMAGE_NAME:latest"
+
+build_args=(
+  --cache-from "$image_latest"
+  -f "$DOCKERFILE_PATH"
+  --tag "$image_tagged"
+  --tag "$image_latest"
+)
+
+aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+
+echo "Attempting to pull a previously built image for use with --cache-from..."
+
+docker image pull --quiet "$image_latest" || \
+  echo "No previously cached image found. The docker build will proceed without using a cached image"
+
+docker build "${build_args[@]}" .
+
+docker push "$image_tagged"
+docker push "$image_latest"
