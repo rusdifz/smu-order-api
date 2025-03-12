@@ -3136,96 +3136,98 @@
     "@webassemblyjs/ast" "1.14.1"
     "@xtuc/long" "4.2.2"
 
-"@wings-corporation/core@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/core/-/@wings-corporation/core-0.26.0-alpha.0.tgz#8abc01866156dbc3ac67b402c912d6b300e2bc98"
-  integrity sha1-irwBhmFW28OsZ7QCyRLWswDivJg=
+"@wings-corporation/core@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/core/1.0.0/bdffc0f02c292d93a9ae252d5936358bee1ff71c#bdffc0f02c292d93a9ae252d5936358bee1ff71c"
+  integrity sha512-Az/RAqoBTGThcqLyhPqJbclAdpws91sWq+1p2vctTLWik4G9eE0AIO+Ysg78JRArCG6aBWVBOztsv3aRoT6jTg==
   dependencies:
-    "@wings-corporation/domain" "^0.26.0-alpha.0"
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/domain" "^1.0.0"
+    "@wings-corporation/types" "^1.0.0"
 
-"@wings-corporation/domain@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/domain/-/@wings-corporation/domain-0.26.0-alpha.0.tgz#44d9ff02c86c07d9773d9e7db0a8a9fd92df00cd"
-  integrity sha1-RNn/AshsB9l3PZ59sKip/ZLfAM0=
+"@wings-corporation/domain@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/domain/1.0.0/bef7caf7ed77afa3ddf2aa007da0cc21d75d6fb6#bef7caf7ed77afa3ddf2aa007da0cc21d75d6fb6"
+  integrity sha512-oI0F6lephluWJ7FONfOkEXjYSVd9PHFErty/ZCELDwcbtROuockuB+H3HnL9ij5oRs99rNna5a51zesnU275+Q==
   dependencies:
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^1.0.0"
     lodash.isequal "^4.5.0"
     shallow-equal-object "^1.1.1"
     snakecase-keys "5.5.0"
     uuid "^9.0.1"
 
-"@wings-corporation/nest-advisory-lock-mutex@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-advisory-lock-mutex/-/@wings-corporation/nest-advisory-lock-mutex-0.26.0-alpha.0.tgz#2aefed5ee47b971d539a5b870420735e980248fb"
-  integrity sha1-Ku/tXuR7lx1TmluHBCBzXpgCSPs=
+"@wings-corporation/nest-advisory-lock-mutex@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-advisory-lock-mutex/1.0.0/f6ca8fd9bd9e4fd3fd1413810ed63d04eaf04bbd#f6ca8fd9bd9e4fd3fd1413810ed63d04eaf04bbd"
+  integrity sha512-ZtRcMWd5MxkqSu859oGanLDhiWVzqNa3Uq/9QpwnpIUvWkjLhvmFKJLyilLfiiH4tYYhcx6gaTqCVSGEY/B3QA==
   dependencies:
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^1.0.0"
 
-"@wings-corporation/nest-auth@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-auth/-/@wings-corporation/nest-auth-0.26.0-alpha.0.tgz#4dee7d0183d9e4c3caf5400d07d386a991d868a6"
-  integrity sha1-Te59AYPZ5MPK9UANB9OGqZHYaKY=
+"@wings-corporation/nest-auth@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-auth/1.0.0/9fbc7372086a1be0384b7d8a5ea281059b3221ef#9fbc7372086a1be0384b7d8a5ea281059b3221ef"
+  integrity sha512-2L11KMUejEi89FajcyxTGD+NzftaUFEITpJRlyHHsuGe2goUvtRPaXe3rDGTvKE+qDS1GYgdRtu5geCADOF2VA==
   dependencies:
     "@nestjs/passport" "^10.0.3"
-    "@wings-corporation/nest-http" "^0.26.0-alpha.0"
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/nest-http" "^1.0.0"
+    "@wings-corporation/types" "^1.0.0"
     jsonwebtoken "^9.0.2"
     luxon "^3.5.0"
     passport-jwt "^4.0.1"
 
-"@wings-corporation/nest-event-bus@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-event-bus/-/@wings-corporation/nest-event-bus-0.26.0-alpha.0.tgz#18890f58c6d2bfeb93a57b4b3e684cfa370b2f59"
-  integrity sha1-GIkPWMbSv+uTpXtLPmhM+jcLL1k=
+"@wings-corporation/nest-event-bus@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-event-bus/1.0.0/4b7b27b7d92c3e452be70b3ac52503350b62df06#4b7b27b7d92c3e452be70b3ac52503350b62df06"
+  integrity sha512-noMxpd//5aU/RNFtmc18zoKXQC/5G3fEnEWYm9vfDVZ0Skuup9zUYsnXoeeIUJc6Xd6EAs/J1BRprl2ALBvGGw==
   dependencies:
-    "@wings-corporation/types" "^0.26.0-alpha.0"
-    "@wings-corporation/utils" "^0.14.2-alpha.0"
+    "@wings-corporation/types" "^1.0.0"
+    "@wings-corporation/utils" "^1.0.0"
     snakecase-keys "5.5.0"
 
-"@wings-corporation/nest-fastify@^0.12.0-alpha.0":
-  version "0.12.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-fastify/-/@wings-corporation/nest-fastify-0.12.0-alpha.0.tgz#f43df057b6926cd13d07b9ad69e35f7f6cbb2d12"
-  integrity sha1-9D3wV7aSbNE9B7mtaeNff2y7LRI=
+"@wings-corporation/nest-fastify@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-fastify/1.0.0/7fc165ed912681b2f5324f7ba9faf52acb48b3a9#7fc165ed912681b2f5324f7ba9faf52acb48b3a9"
+  integrity sha512-UIbs7xu4lLtTLn431U8jkK3IHYPGppLwz8rfephyC9frZHnyjBJSjTVNtCtBTzAIa/OINieauJfzLN0K2qV0ng==
   dependencies:
     uuid "^9.0.1"
 
-"@wings-corporation/nest-http@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-http/-/@wings-corporation/nest-http-0.26.0-alpha.0.tgz#573ea0db86617e70837d795c0627b33133cef0b0"
-  integrity sha1-Vz6g24ZhfnCDfXlcBiezMTPO8LA=
+"@wings-corporation/nest-http@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-http/1.0.0/5b0a42fc25e210d6563e114d5d923a38de16548a#5b0a42fc25e210d6563e114d5d923a38de16548a"
+  integrity sha512-Dpk6EhUT9jGZmUmbhYjglu1U4e60Z04UV3jIYO8mT3yQDWk2/t+9N0fifDjlufTsB0aPJDT9maWYBiFe+sPUCA==
   dependencies:
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^1.0.0"
     lodash "^4.17.21"
 
-"@wings-corporation/nest-pino-logger@^0.17.0-alpha.0":
-  version "0.17.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-pino-logger/-/@wings-corporation/nest-pino-logger-0.17.0-alpha.0.tgz#235d3ea17fff466dbd05d936f0595042ddd76982"
-  integrity sha1-I10+oX//Rm29Bdk28FlQQt3XaYI=
+"@wings-corporation/nest-pino-logger@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-pino-logger/1.0.0/f0beaf1e8d26f75df135f0df018b7fe16382daf5#f0beaf1e8d26f75df135f0df018b7fe16382daf5"
+  integrity sha512-UwvB00wWSui0VZNUc98204CVKV21M1vlWGBJpjGeJnDVCtbzXYAscUl8pab1jD3Syz2fIDj3Oyz6CmB2I75b2A==
   dependencies:
     nestjs-pino "4.0.0"
 
-"@wings-corporation/nest-typeorm-uow@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-typeorm-uow/-/@wings-corporation/nest-typeorm-uow-0.26.0-alpha.0.tgz#8f3839017e1b26c949cfd694fc4b388ca89005b2"
-  integrity sha1-jzg5AX4bJslJz9aU/Es4jKiQBbI=
+"@wings-corporation/nest-typeorm-uow@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-typeorm-uow/1.0.0/6f056cd280590a2844ba451a30939deb684694ae#6f056cd280590a2844ba451a30939deb684694ae"
+  integrity sha512-QW6xzcpBSYmPmzKWWDw/IexR8qUCmoHtraV1rdWoZrEean7kSvIyy5I01HpxNuAxtXhObo+t21aPOgLz7DsdOQ==
   dependencies:
-    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^1.0.0"
 
-"@wings-corporation/nest-xray@^0.3.1-alpha.0":
-  version "0.3.1-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-xray/-/@wings-corporation/nest-xray-0.3.1-alpha.0.tgz#8d18a0bcdc71fe73ab6d86fc47e55f2b14002744"
-  integrity sha1-jRigvNxx/nOrbYb8R+VfKxQAJ0Q=
+"@wings-corporation/nest-xray@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/nest-xray/1.0.0/98dae3c8c505c7d4d0bc24417c27cebd68e960cc#98dae3c8c505c7d4d0bc24417c27cebd68e960cc"
+  integrity sha512-NRvEQvLr7Zo4f+dQmLWhj5OBmyD1nnv5H2DrxrazpPhUZww55/HJaJViCtfb4Sj2NIpZmnBRqqM8WgfiObkPzQ==
 
-"@wings-corporation/types@^0.26.0-alpha.0":
-  version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/types/-/@wings-corporation/types-0.26.0-alpha.0.tgz#9ad6c3f1d9504b86bf9277c7736352cfea06e873"
-  integrity sha1-mtbD8dlQS4a/knfHc2NSz+oG6HM=
+"@wings-corporation/types@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/types/1.0.0/9e87eaf48321507c0d0607e60f9d096a2b8c1776#9e87eaf48321507c0d0607e60f9d096a2b8c1776"
+  integrity sha512-DXSfZg4QlIQPs5cyvmma2F7EbjovQ1zFUTGWloAZfhDVVzqk9Jb+oYtHlI74vn5jsH0kdVXfVsS8FY9v4ny4jg==
 
-"@wings-corporation/utils@^0.14.2-alpha.0":
-  version "0.14.2-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/utils/-/@wings-corporation/utils-0.14.2-alpha.0.tgz#f3d51e3c2690c1f49c7e6b77e300a7f054b52aa5"
-  integrity sha1-89UePCaQwfScfmt34wCn8FS1KqU=
+"@wings-corporation/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@wings-corporation/utils/1.0.0/b5d1b96e79824f7ea4d10b594624cb8be085f841#b5d1b96e79824f7ea4d10b594624cb8be085f841"
+  integrity sha512-Ql7pRYPQYvHzEdxKcUxyqrVbMdPqsjeITta24ZIiBCAHd0/k/A0nRcaFD2P/cr939x2avGllb1Bb0iTsZfoB3Q==
+  dependencies:
+    "@wings-corporation/types" "^1.0.0"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
