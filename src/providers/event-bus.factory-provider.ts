@@ -2,8 +2,8 @@ import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { ServiceReversedFQDN } from '@wings-online/app.constants';
-import { IIntegrationEvent } from '@wo-sdk/core';
-import { EventBusModuleOptions } from '@wo-sdk/nest-event-bus';
+import { IIntegrationEvent } from '@wings-corporation/core';
+import { EventBusModuleOptions } from '@wings-corporation/nest-event-bus';
 
 export const EventBusFactoryProvider = (
   config: ConfigService,

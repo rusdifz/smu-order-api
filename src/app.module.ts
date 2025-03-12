@@ -2,18 +2,22 @@ import { ValidationOptions } from 'joi';
 
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule, TypeOrmPinoLogger } from '@wings-online/common';
-import { MutexModule } from '@wo-sdk/nest-advisory-lock-mutex';
-import { AuthModule } from '@wo-sdk/nest-auth';
-import { EventBusModule } from '@wo-sdk/nest-event-bus';
-import { LoggerModule, XRayLogger } from '@wo-sdk/nest-pino-logger';
-import { TracingModule, XRAY_CLIENT } from '@wo-sdk/nest-xray';
+import { MutexModule } from '@wings-corporation/nest-advisory-lock-mutex';
+import { AuthModule } from '@wings-corporation/nest-auth';
+import { EventBusModule } from '@wings-corporation/nest-event-bus';
+import { LoggerModule, XRayLogger } from '@wings-corporation/nest-pino-logger';
+import { TracingModule, XRAY_CLIENT } from '@wings-corporation/nest-xray';
 
 import { EVENTBRIDGE_CLIENT_TOKEN, S3_CLIENT_TOKEN } from './app.constants';
 import { AuthService } from './auth';
+import { TypeOrmUserInfoEntity } from './auth/entities/typeorm.user-info.entity';
+import { TypeOrmUserEntity } from './auth/entities/typeorm.user.entity';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { configSchema } from './config';
 import { InvoiceModule } from './invoice';
 import { OrderModule } from './order';
@@ -50,6 +54,7 @@ import {
       extraProviders: [TypeOrmPinoLogger],
       useClass: TypeOrmModuleOptionsProvider,
     }),
+    TypeOrmModule.forFeature([TypeOrmUserEntity, TypeOrmUserInfoEntity]),
     MutexModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -83,7 +88,18 @@ import {
     ParameterModule.forRoot(),
     ScheduleModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (configService: ConfigService) => {
+        const timeoutInMilliseconds: number = configService.getOrThrow<number>(
+          'TIMEOUT_IN_MILLISECONDS',
+        );
+        return new TimeoutInterceptor(timeoutInMilliseconds);
+      },
+      inject: [ConfigService],
+    },
+  ],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(private readonly parameterService: ParameterService) {}

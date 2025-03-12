@@ -1,4 +1,4 @@
-import { Nullable } from '@wo-sdk/core';
+import { Nullable } from '@wings-corporation/core';
 
 export interface ProductSearchReadModel {
   id: string;

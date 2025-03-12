@@ -4,8 +4,8 @@ import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { PaginationUtil, UserIdentity } from '@wings-online/common';
 import { BaseReadRepository } from '@wings-online/common/repositories/base.read-repository';
-import { Collection, PaginatedCollection } from '@wo-sdk/core';
-import { DEFAULT_QUERY_LIMIT } from '@wo-sdk/nest-http';
+import { Collection, PaginatedCollection } from '@wings-corporation/core';
+import { DEFAULT_QUERY_LIMIT } from '@wings-corporation/nest-http';
 
 import {
   TypeOrmBillingHeaderEntity,
@@ -257,7 +257,7 @@ export class TypeOrmInvoiceReadRepository
       .where('billing.number = :invoiceNumber', {
         invoiceNumber,
       })
-      .andWhere(`LTRIM(billing.payer, '0') in (:...payerIds)`, {
+      .andWhere(`billing.payer in (:...payerIds)`, {
         payerIds,
       })
       .andWhere('items.total > 0')

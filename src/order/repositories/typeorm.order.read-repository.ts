@@ -11,8 +11,8 @@ import {
 import { BaseReadRepository } from '@wings-online/common/repositories/base.read-repository';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
-import { Collection, PaginatedCollection } from '@wo-sdk/core';
-import { DEFAULT_QUERY_LIMIT } from '@wo-sdk/nest-http';
+import { Collection, PaginatedCollection } from '@wings-corporation/core';
+import { DEFAULT_QUERY_LIMIT } from '@wings-corporation/nest-http';
 
 import {
   TypeOrmDeliveryHeader,
@@ -55,7 +55,8 @@ export class TypeOrmOrderReadRepository
     identity: UserIdentity,
     filter: {
       state?: OrderState;
-      externalIds?: string[];
+      // externalIds?: string[];
+      keyword?: string;
     } = {
       state: 'ANY',
     },
@@ -120,14 +121,37 @@ export class TypeOrmOrderReadRepository
       }
     }
 
-    if (filter.externalIds) {
+    // if (filter.externalIds) {
+    //   query.distinct(true);
+    //   query.innerJoin('order.items', 'items');
+    //   // see https://postgres.cz/wiki/PostgreSQL_SQL_Tricks_I#Predicate_IN_optimalization
+    //   query.andWhere(
+    //     `items.materialId IN (VALUES ${filter.externalIds
+    //       .map((x) => `('${x}')`)
+    //       .join(',')})`,
+    //   );
+    // }
+
+    if (filter.keyword) {
       query.distinct(true);
-      query.innerJoin('order.items', 'items');
-      // see https://postgres.cz/wiki/PostgreSQL_SQL_Tricks_I#Predicate_IN_optimalization
+      // query.innerJoin('order.items', 'items');
+      // query.andWhere(
+      //   `items.materialId IN (VALUES ${filter.externalIds
+      //     .map((x) => `('${x}')`)
+      //     .join(',')})`,
+      // );
       query.andWhere(
-        `items.materialId IN (VALUES ${filter.externalIds
-          .map((x) => `('${x}')`)
-          .join(',')})`,
+        `order.id IN 
+          (SELECT items.m_order_header_id FROM order_item items
+            WHERE
+              :keyword % any(string_to_array(items.material_title_name, ' '))
+              OR :keyword % any(
+                string_to_array(items.material_desc, ' ')
+              )
+          )`,
+        {
+          keyword: filter.keyword,
+        },
       );
     }
 
@@ -184,7 +208,7 @@ export class TypeOrmOrderReadRepository
 
   async listOrderHistories(
     identity: UserIdentity,
-    filter?: { externalIds?: string[] },
+    filter?: { externalIds?: string[]; keyword?: string },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
@@ -214,14 +238,30 @@ export class TypeOrmOrderReadRepository
       )
       .limit(limit);
 
-    if (filter?.externalIds) {
-      query.distinct(true);
-      query.innerJoin('order.items', 'items');
+    if (filter && filter.keyword) {
+      // query.distinct(true);
+      // query.innerJoin('order.items', 'items');
+      // query.andWhere(
+      //   `product_text_search(items.materialTitleName, items.itemName) @@ plainto_tsquery('${filter.keyword}')`,
+      // );
+      // query.andWhere(
+      //   // see https://postgres.cz/wiki/PostgreSQL_SQL_Tricks_I#Predicate_IN_optimalization
+      //   `items.materialId IN (VALUES ${filter.externalIds
+      //     .map((x) => `('${x}')`)
+      //     .join(',')})`,
+      // );
       query.andWhere(
-        // see https://postgres.cz/wiki/PostgreSQL_SQL_Tricks_I#Predicate_IN_optimalization
-        `items.materialId IN (VALUES ${filter.externalIds
-          .map((x) => `('${x}')`)
-          .join(',')})`,
+        `order.id IN 
+          (SELECT items.m_order_header_id FROM order_item_hist items
+            WHERE
+              :keyword % any(string_to_array(items.material_title_name, ' '))
+              OR :keyword % any(
+                string_to_array(items.material_desc, ' ')
+              )
+          )`,
+        {
+          keyword: filter.keyword,
+        },
       );
     }
 
@@ -458,6 +498,7 @@ export class TypeOrmOrderReadRepository
         'order.deliveries',
         TypeOrmDeliveryHeader,
         'deliveries',
+        // TODO consider removing LTRIM
         `LTRIM(order.sales_order_code, '0') = LTRIM(deliveries.so_number, '0')`,
       )
       .leftJoinAndSelect('deliveries.items', 'deliveryItems')
@@ -465,7 +506,7 @@ export class TypeOrmOrderReadRepository
       .andWhere('order.customerId = :customerId', {
         customerId: identity.externalId,
       })
-      .orderBy('items.sequence', 'ASC');
+      .orderBy('items.sequance::int', 'ASC');
 
     const entity = await query.getOne();
 

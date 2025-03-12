@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OpensearchModuleOptionsProvider } from '@wings-online/providers';
-import { TypeOrmUnitOfWorkModule } from '@wo-sdk/nest-typeorm-uow';
+import { TypeOrmUnitOfWorkModule } from '@wings-corporation/nest-typeorm-uow';
 
 import { CommandControllers, CommandHandlers } from './commands';
 import { Factories } from './domains';

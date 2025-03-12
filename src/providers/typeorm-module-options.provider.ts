@@ -4,8 +4,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { ServiceReversedFQDN } from '@wings-online/app.constants';
 import { TypeOrmPinoLogger } from '@wings-online/common';
-import { XRAY_CLIENT, XRayClient } from '@wo-sdk/nest-xray';
+import { XRAY_CLIENT, XRayClient } from '@wings-corporation/nest-xray';
 
 @Injectable()
 export class TypeOrmModuleOptionsProvider implements TypeOrmOptionsFactory {
@@ -35,6 +36,14 @@ export class TypeOrmModuleOptionsProvider implements TypeOrmOptionsFactory {
         type: 'database',
         tableName: this.CACHE_TABLE_NAME,
       },
+      extra: {
+        max: this.config.getOrThrow('PG_MAX_POOL_SIZE'),
+        connectionTimeoutMillis: this.config.get(
+          'PG_CONNECTION_TIMEOUT_MILLIS',
+        ),
+        idleTimeoutMillis: this.config.get('PG_IDLE_TIMEOUT_MILLIS'),
+      },
+      applicationName: ServiceReversedFQDN,
       synchronize: false,
       autoLoadEntities: true,
       logger: this.logger,

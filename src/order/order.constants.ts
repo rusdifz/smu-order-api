@@ -1,4 +1,4 @@
-import { Division } from '@wo-sdk/core';
+import { Division } from '@wings-corporation/core';
 
 /**
  * The type of buyer. Same as `Division`

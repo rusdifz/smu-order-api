@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 import { DatetimeTransformer } from '@wings-online/common';
-import { Nullable } from '@wo-sdk/core';
+import { Nullable } from '@wings-corporation/core';
 
 import {
   FlagCancelOrder,

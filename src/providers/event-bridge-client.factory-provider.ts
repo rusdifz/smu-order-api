@@ -1,6 +1,6 @@
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { ConfigService } from '@nestjs/config';
-import { getXRayInstance } from '@wo-sdk/nest-xray';
+import { getXRayInstance } from '@wings-corporation/nest-xray';
 
 export const EventBridgeClientFactoryProvider = (config: ConfigService) => {
   return getXRayInstance().captureAWSv3Client(

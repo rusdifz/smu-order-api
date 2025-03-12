@@ -3,6 +3,10 @@ FROM node:20-bullseye-slim as build
 WORKDIR /home/node/app
 
 COPY package.json yarn.lock .npmrc ./
+
+ARG NPM_GITHUB_TOKEN
+ENV NPM_GITHUB_TOKEN=${NPM_GITHUB_TOKEN}
+
 RUN yarn install --frozen-lockfile --non-interactive --production --ignore-scripts
 
 FROM node:20-alpine as runtime

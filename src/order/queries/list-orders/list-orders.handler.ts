@@ -1,6 +1,5 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { createBadRequestException } from '@wings-online/common';
 import {
   IOrderReadRepository,
   IProductSearchReadRepository,
@@ -9,7 +8,7 @@ import {
   ORDER_READ_REPOSITORY,
   PRODUCT_SEARCH_READ_REPOSITORY,
 } from '@wings-online/order/order.constants';
-import { InjectPinoLogger, PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { ListOrdersQuery } from './list-orders.query';
 import { ListOrdersResult } from './list-orders.result';
@@ -31,23 +30,24 @@ export class ListOrdersHandler
     this.logger.trace(`BEGIN`);
     this.logger.info({ query });
 
-    const { identity, isDelivered, limit, cursor } = query;
+    const { identity, isDelivered, limit, cursor, search } = query;
 
-    let externalIds: string[] | undefined;
+    // if (query.search) {
+    //   searchTime = performance.now();
+    //   const products = await this.searchRepository.search({
+    //     search: query.search,
+    //     limit: 70,
+    //   });
+    //   externalIds = products.map((product) => product.external_id);
 
-    if (query.search) {
-      const products = await this.searchRepository.search({
-        search: query.search,
-        // TODO change this to env vars
-        // @BEN we limit result at 70, see https://postgres.cz/wiki/PostgreSQL_SQL_Tricks_I#Predicate_IN_optimalization
-        limit: 70,
-      });
-      externalIds = products.map((product) => product.external_id);
+    //   if (products.length === 0) {
+    //     throw createBadRequestException('product-search-empty');
+    //   }
+    //   searchTime = performance.now() - searchTime;
+    // }
 
-      if (products.length === 0) {
-        throw createBadRequestException('product-search-empty');
-      }
-    }
+    let queryTime: number | undefined;
+    queryTime = performance.now();
 
     const state =
       isDelivered === true
@@ -56,17 +56,21 @@ export class ListOrdersHandler
         ? 'UNDELIVERED'
         : 'ANY';
 
+    queryTime = performance.now();
     const orders = await this.repository.listOrders(
       identity,
       {
         state,
-        externalIds,
+        // externalIds,
+        keyword: search,
       },
       {
         limit,
         cursor,
       },
     );
+    queryTime = performance.now() - queryTime;
+    this.logger.info({ queryTime }, 'list-order-query');
 
     this.logger.trace(`END`);
     return new ListOrdersResult(orders);

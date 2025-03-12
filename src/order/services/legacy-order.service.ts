@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { LEGACY_ORDER_DEFAULT_TIMEZONE } from '@wings-online/app.constants';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
-import { PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { ILegacyOrderService } from '../interfaces';
 import { OrderStatus } from '../order.constants';

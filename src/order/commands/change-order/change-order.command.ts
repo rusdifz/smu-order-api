@@ -1,5 +1,5 @@
 import { UserIdentity } from '@wings-online/common';
-import { CorrelatableCommand, WithIdentity } from '@wo-sdk/core';
+import { CorrelatableCommand, WithIdentity } from '@wings-corporation/core';
 
 export class ChangeOrderCommandProps implements WithIdentity<UserIdentity> {
   readonly identity: UserIdentity;

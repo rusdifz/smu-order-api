@@ -1,5 +1,5 @@
 import { UserIdentity } from '@wings-online/common';
-import { Collection, PaginatedCollection } from '@wo-sdk/core';
+import { Collection, PaginatedCollection } from '@wings-corporation/core';
 
 import { OrderState } from '../order.constants';
 import { OrderReadModel } from '../read-models';
@@ -49,7 +49,7 @@ export interface IOrderReadRepository {
   listOrderHistories(
     identity: UserIdentity,
     filter?: {
-      externalIds?: string[];
+      keyword?: string;
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;
@@ -58,7 +58,8 @@ export interface IOrderReadRepository {
     identity: UserIdentity,
     filter?: {
       state?: OrderState;
-      externalIds?: string[];
+      // externalIds?: string[];
+      keyword?: string;
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;

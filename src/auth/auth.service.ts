@@ -1,13 +1,12 @@
-import ms from 'ms';
 import { DataSource } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { IdentityUtil, UserIdentity } from '@wings-online/common';
-import { CacheUtil } from '@wings-online/common/utils/cache.util';
-import { TypeOrmCustomerEntity } from '@wings-online/order/entities';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
+
+import { TypeOrmUserEntity } from './entities/typeorm.user.entity';
 
 @Injectable()
 export class AuthService {
@@ -27,16 +26,10 @@ export class AuthService {
     let identity: UserIdentity | undefined;
 
     const entity = await this.dataSource
-      .createQueryBuilder(TypeOrmCustomerEntity, 'identity')
+      .createQueryBuilder(TypeOrmUserEntity, 'identity')
       .innerJoinAndSelect('identity.infos', 'info')
       .where('identity.externalId = :externalId', { externalId })
-      .cache(
-        CacheUtil.getCacheKeyByParts([
-          this.getIdentityByExternalId.name,
-          externalId,
-        ]),
-        ms('1h'),
-      )
+      // .cache(CacheUtil.getCacheKey(`user:${externalId}:identity`), ms('1h'))
       .getOne();
 
     if (entity) {

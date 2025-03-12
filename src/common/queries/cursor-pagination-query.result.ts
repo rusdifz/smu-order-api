@@ -1,5 +1,5 @@
 import { IQueryResult } from '@nestjs/cqrs';
-import { Collection } from '@wo-sdk/core';
+import { Collection } from '@wings-corporation/core';
 
 import { ReadModel } from '../domains';
 

@@ -1,7 +1,7 @@
 import { kebabCase } from 'lodash';
 
 import { BadRequestException } from '@nestjs/common';
-import { DomainException, HttpErrorResponse } from '@wo-sdk/core';
+import { DomainException, HttpErrorResponse } from '@wings-corporation/core';
 
 export const createBadRequestException = (
   code: string,

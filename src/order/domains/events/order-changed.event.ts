@@ -1,4 +1,4 @@
-import { DomainEvent } from '@wo-sdk/domain';
+import { DomainEvent } from '@wings-corporation/domain';
 
 export type OrderChangedEventData = {
   id: number;

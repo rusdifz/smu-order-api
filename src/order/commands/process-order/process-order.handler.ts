@@ -9,7 +9,7 @@ import {
   LEGACY_ORDER_SERVICE,
   ORDER_WRITE_REPOSITORY,
 } from '@wings-online/order/order.constants';
-import { InjectPinoLogger, PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { ProcessOrderCommand } from './process-order.command';
 

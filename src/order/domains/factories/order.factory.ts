@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IAggregateFactory } from '@wo-sdk/domain';
+import { IAggregateFactory } from '@wings-corporation/domain';
 
 import {
   OrderAggregate,

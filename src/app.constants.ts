@@ -1,3 +1,6 @@
+/**
+ * @deprecated use `ServiceReversedFQDN` instead
+ */
 export const ServiceName = 'order-api';
 export const ServiceReversedFQDN = 'com.online.wings.order.api';
 export const LEGACY_ORDER_DEFAULT_TIMEZONE = 'Asia/Jakarta';

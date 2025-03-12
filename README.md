@@ -26,14 +26,14 @@ This project uses **Yarn Classic v1.22.22**. You can find more details on it [he
 npm i -g yarn
 ```
 
-### Obtain credentials to install `@wo-sdk/*` package(s)
+### Obtain credentials to install `@wings-corporation/*` package(s)
 
-This repository depends on the JavaScript library (`@wo-sdk`), which is deployed to the GitLab package registry. To authenticate with the registry, you’ll need appropriate credentials. For more information on the available credentials and how to authenticate, please refer to the [GitLab authentication documentation](https://docs.gitlab.com/user/packages/npm_registry/#authenticate-to-the-package-registry).
+This repository depends on the JavaScript library (`@wings-corporation`), which is deployed to the GitLab package registry. To authenticate with the registry, you’ll need appropriate credentials. For more information on the available credentials and how to authenticate, please refer to the [GitLab authentication documentation](https://docs.gitlab.com/user/packages/npm_registry/#authenticate-to-the-package-registry).
 
 Once you've obtain the appropriate credentials (usually in a form of token), create a `.npmrc` file in the root directory of this project. Include the following lines in the `.npmrc` file:
 
 ```
-@wo-sdk:registry=<domain_name>/api/v4/projects/<project_id>/packages/npm/
+@wings-corporation:registry=<domain_name>/api/v4/projects/<project_id>/packages/npm/
 //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_authToken=<token>
 //<domain_name>/api/v4/packages/npm/:_authToken=<token>
 ```
@@ -80,21 +80,22 @@ $ ./ci/bin/build
 
 ### Application Configuration
 
-| Environment Variables            | Description                                                                                                                                                       | Required           | Default |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------- |
-| LOG_LEVEL                        | The log level used by the application. Valid values are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                        |                    | `info`  |
-| LOG_ASYNC                        | Enable/disables asynchronous logging. If you do not wish to enable async logging, simplt omit this env var.                                                       |                    | N/A     |
-| LOG_MIN_BUFFER                   | Sets the application log minimum buffer length before flushing. Only applicable if you enable async logging.                                                      |                    | 4096    |
-| PORT                             | Set the port number which the application will listen to                                                                                                          |                    | 3000    |
-| PG_DATABASE_WRITE_URL            | Set the PostgreSQL database connection string used for **write** operation (Write Instance). Example: `postgresql://username:password@host:port/db?schema=public` | :white_check_mark: | N/A     |
-| PG_DATABASE_READ_URL             | Set the PostgreSQL database connection string used for **read** operation (Reader Instance). Example: `postgresql://username:password@host:port/db?schema=public` | :white_check_mark: | N/A     |
-| JWT_SECRET                       | Set the JWT secret. **Value must be in Base64 format**.                                                                                                           | :white_check_mark: | N/A     |
-| OPENSEARCH_NODE                  | Sets the endpoint for OpenSearch to be used. Example: `https://search.ap-southeast-1.es.amazonaws.com`                                                            | :white_check_mark: | N/A     |
-| OPENSEARCH_CREDENTIAL            | Sets the OpenSearch credentials to use. Example: `username:password`                                                                                              | :white_check_mark: | N/A     |
-| PG_MAX_POOL_SIZE                 | Sets the maximum pool size (PostgreSQL).                                                                                                                          |                    | 20      |
-| PG_MAX_CONNECTION_TIMEOUT_MILLIS | Sets the number of milliseconds to wait before timing out when connecting a new client.                                                                           |                    | 1000    |
-| CACHE_PREFIX                     | Sets the prefix to be appended when saving data to cache.                                                                                                         |                    | 'order' |
-| LEGACY_API_URL                   | Legacy API endpoint                                                                                                                                               |                    | N/A     |
+| Environment Variables        | Description                                                                                                                                                       | Required           | Default |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------- |
+| LOG_LEVEL                    | The log level used by the application. Valid values are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                        |                    | `info`  |
+| LOG_ASYNC                    | Enable/disables asynchronous logging. If you do not wish to enable async logging, simplt omit this env var.                                                       |                    | N/A     |
+| LOG_MIN_BUFFER               | Sets the application log minimum buffer length before flushing. Only applicable if you enable async logging.                                                      |                    | 4096    |
+| PORT                         | Set the port number which the application will listen to                                                                                                          |                    | 3000    |
+| PG_DATABASE_WRITE_URL        | Set the PostgreSQL database connection string used for **write** operation (Write Instance). Example: `postgresql://username:password@host:port/db?schema=public` | :white_check_mark: | N/A     |
+| PG_DATABASE_READ_URL         | Set the PostgreSQL database connection string used for **read** operation (Reader Instance). Example: `postgresql://username:password@host:port/db?schema=public` | :white_check_mark: | N/A     |
+| JWT_SECRET                   | Set the JWT secret. **Value must be in Base64 format**.                                                                                                           | :white_check_mark: | N/A     |
+| OPENSEARCH_NODE              | Sets the endpoint for OpenSearch to be used. Example: `https://search.ap-southeast-1.es.amazonaws.com`                                                            | :white_check_mark: | N/A     |
+| OPENSEARCH_CREDENTIAL        | Sets the OpenSearch credentials to use. Example: `username:password`                                                                                              | :white_check_mark: | N/A     |
+| CACHE_PREFIX                 | Sets the prefix to be appended when saving data to cache.                                                                                                         |                    | 'order' |
+| LEGACY_API_URL               | Legacy API endpoint                                                                                                                                               |                    | N/A     |
+| PG_MAX_POOL_SIZE             | Sets the maximum pool size (PostgreSQL).                                                                                                                          |                    | 10      |
+| PG_CONNECTION_TIMEOUT_MILLIS | Sets the number of milliseconds to wait before timing out when connecting a new client.                                                                           |                    | 5000    |
+| PG_IDLE_TIMEOUT_MILLIS       | Sets the number of milliseconds a client must sit idle in the pool and not be checked out before it is disconnected from the backend and discarded.               |                    | 30000   |
 
 ### AWS Service Configurations
 

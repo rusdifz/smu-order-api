@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
 
 import { createBadRequestException } from '@wings-online/common';
-import { Nullable } from '@wo-sdk/core';
-import { AggregateRoot, EntityId } from '@wo-sdk/domain';
+import { Nullable } from '@wings-corporation/core';
+import { AggregateRoot, EntityId } from '@wings-corporation/domain';
 
 import {
   FlagCancelOrder,

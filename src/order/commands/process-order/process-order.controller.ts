@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserIdentity } from '@wings-online/common';
-import { Identity } from '@wo-sdk/nest-http';
+import { Identity } from '@wings-corporation/nest-http';
 
 import { ProcessOrderBodyDto } from './process-order.body.dto';
 import { ProcessOrderCommand } from './process-order.command';

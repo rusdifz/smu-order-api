@@ -18,6 +18,12 @@ const configSchema = Joi.object({
     .optional(),
   EXTERNAL_API_TIMEOUT: Joi.string().optional().default(5000),
   LEGACY_API_URL: Joi.string().required(),
+  CACHE_PREFIX: Joi.string().optional().default('order'),
+  TIMEOUT_IN_MILLISECONDS: Joi.number().optional().default(5000),
+  // connection pool config
+  PG_MAX_POOL_SIZE: Joi.number().optional().default(10),
+  PG_CONNECTION_TIMEOUT_MILLIS: Joi.number().optional().default(5000),
+  PG_IDLE_TIMEOUT_MILLIS: Joi.number().optional().default(30000),
 });
 
 export { configSchema };

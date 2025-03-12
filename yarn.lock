@@ -3136,95 +3136,95 @@
     "@webassemblyjs/ast" "1.14.1"
     "@xtuc/long" "4.2.2"
 
-"@wo-sdk/core@^0.26.0-alpha.0":
+"@wings-corporation/core@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/core/-/@wo-sdk/core-0.26.0-alpha.0.tgz#8abc01866156dbc3ac67b402c912d6b300e2bc98"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/core/-/@wings-corporation/core-0.26.0-alpha.0.tgz#8abc01866156dbc3ac67b402c912d6b300e2bc98"
   integrity sha1-irwBhmFW28OsZ7QCyRLWswDivJg=
   dependencies:
-    "@wo-sdk/domain" "^0.26.0-alpha.0"
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/domain" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
 
-"@wo-sdk/domain@^0.26.0-alpha.0":
+"@wings-corporation/domain@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/domain/-/@wo-sdk/domain-0.26.0-alpha.0.tgz#44d9ff02c86c07d9773d9e7db0a8a9fd92df00cd"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/domain/-/@wings-corporation/domain-0.26.0-alpha.0.tgz#44d9ff02c86c07d9773d9e7db0a8a9fd92df00cd"
   integrity sha1-RNn/AshsB9l3PZ59sKip/ZLfAM0=
   dependencies:
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
     lodash.isequal "^4.5.0"
     shallow-equal-object "^1.1.1"
     snakecase-keys "5.5.0"
     uuid "^9.0.1"
 
-"@wo-sdk/nest-advisory-lock-mutex@^0.26.0-alpha.0":
+"@wings-corporation/nest-advisory-lock-mutex@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-advisory-lock-mutex/-/@wo-sdk/nest-advisory-lock-mutex-0.26.0-alpha.0.tgz#2aefed5ee47b971d539a5b870420735e980248fb"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-advisory-lock-mutex/-/@wings-corporation/nest-advisory-lock-mutex-0.26.0-alpha.0.tgz#2aefed5ee47b971d539a5b870420735e980248fb"
   integrity sha1-Ku/tXuR7lx1TmluHBCBzXpgCSPs=
   dependencies:
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
 
-"@wo-sdk/nest-auth@^0.26.0-alpha.0":
+"@wings-corporation/nest-auth@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-auth/-/@wo-sdk/nest-auth-0.26.0-alpha.0.tgz#4dee7d0183d9e4c3caf5400d07d386a991d868a6"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-auth/-/@wings-corporation/nest-auth-0.26.0-alpha.0.tgz#4dee7d0183d9e4c3caf5400d07d386a991d868a6"
   integrity sha1-Te59AYPZ5MPK9UANB9OGqZHYaKY=
   dependencies:
     "@nestjs/passport" "^10.0.3"
-    "@wo-sdk/nest-http" "^0.26.0-alpha.0"
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/nest-http" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
     jsonwebtoken "^9.0.2"
     luxon "^3.5.0"
     passport-jwt "^4.0.1"
 
-"@wo-sdk/nest-event-bus@^0.26.0-alpha.0":
+"@wings-corporation/nest-event-bus@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-event-bus/-/@wo-sdk/nest-event-bus-0.26.0-alpha.0.tgz#18890f58c6d2bfeb93a57b4b3e684cfa370b2f59"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-event-bus/-/@wings-corporation/nest-event-bus-0.26.0-alpha.0.tgz#18890f58c6d2bfeb93a57b4b3e684cfa370b2f59"
   integrity sha1-GIkPWMbSv+uTpXtLPmhM+jcLL1k=
   dependencies:
-    "@wo-sdk/types" "^0.26.0-alpha.0"
-    "@wo-sdk/utils" "^0.14.2-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
+    "@wings-corporation/utils" "^0.14.2-alpha.0"
     snakecase-keys "5.5.0"
 
-"@wo-sdk/nest-fastify@^0.12.0-alpha.0":
+"@wings-corporation/nest-fastify@^0.12.0-alpha.0":
   version "0.12.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-fastify/-/@wo-sdk/nest-fastify-0.12.0-alpha.0.tgz#f43df057b6926cd13d07b9ad69e35f7f6cbb2d12"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-fastify/-/@wings-corporation/nest-fastify-0.12.0-alpha.0.tgz#f43df057b6926cd13d07b9ad69e35f7f6cbb2d12"
   integrity sha1-9D3wV7aSbNE9B7mtaeNff2y7LRI=
   dependencies:
     uuid "^9.0.1"
 
-"@wo-sdk/nest-http@^0.26.0-alpha.0":
+"@wings-corporation/nest-http@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-http/-/@wo-sdk/nest-http-0.26.0-alpha.0.tgz#573ea0db86617e70837d795c0627b33133cef0b0"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-http/-/@wings-corporation/nest-http-0.26.0-alpha.0.tgz#573ea0db86617e70837d795c0627b33133cef0b0"
   integrity sha1-Vz6g24ZhfnCDfXlcBiezMTPO8LA=
   dependencies:
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
     lodash "^4.17.21"
 
-"@wo-sdk/nest-pino-logger@^0.17.0-alpha.0":
+"@wings-corporation/nest-pino-logger@^0.17.0-alpha.0":
   version "0.17.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-pino-logger/-/@wo-sdk/nest-pino-logger-0.17.0-alpha.0.tgz#235d3ea17fff466dbd05d936f0595042ddd76982"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-pino-logger/-/@wings-corporation/nest-pino-logger-0.17.0-alpha.0.tgz#235d3ea17fff466dbd05d936f0595042ddd76982"
   integrity sha1-I10+oX//Rm29Bdk28FlQQt3XaYI=
   dependencies:
     nestjs-pino "4.0.0"
 
-"@wo-sdk/nest-typeorm-uow@^0.26.0-alpha.0":
+"@wings-corporation/nest-typeorm-uow@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-typeorm-uow/-/@wo-sdk/nest-typeorm-uow-0.26.0-alpha.0.tgz#8f3839017e1b26c949cfd694fc4b388ca89005b2"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-typeorm-uow/-/@wings-corporation/nest-typeorm-uow-0.26.0-alpha.0.tgz#8f3839017e1b26c949cfd694fc4b388ca89005b2"
   integrity sha1-jzg5AX4bJslJz9aU/Es4jKiQBbI=
   dependencies:
-    "@wo-sdk/types" "^0.26.0-alpha.0"
+    "@wings-corporation/types" "^0.26.0-alpha.0"
 
-"@wo-sdk/nest-xray@^0.3.1-alpha.0":
+"@wings-corporation/nest-xray@^0.3.1-alpha.0":
   version "0.3.1-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/nest-xray/-/@wo-sdk/nest-xray-0.3.1-alpha.0.tgz#8d18a0bcdc71fe73ab6d86fc47e55f2b14002744"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/nest-xray/-/@wings-corporation/nest-xray-0.3.1-alpha.0.tgz#8d18a0bcdc71fe73ab6d86fc47e55f2b14002744"
   integrity sha1-jRigvNxx/nOrbYb8R+VfKxQAJ0Q=
 
-"@wo-sdk/types@^0.26.0-alpha.0":
+"@wings-corporation/types@^0.26.0-alpha.0":
   version "0.26.0-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/types/-/@wo-sdk/types-0.26.0-alpha.0.tgz#9ad6c3f1d9504b86bf9277c7736352cfea06e873"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/types/-/@wings-corporation/types-0.26.0-alpha.0.tgz#9ad6c3f1d9504b86bf9277c7736352cfea06e873"
   integrity sha1-mtbD8dlQS4a/knfHc2NSz+oG6HM=
 
-"@wo-sdk/utils@^0.14.2-alpha.0":
+"@wings-corporation/utils@^0.14.2-alpha.0":
   version "0.14.2-alpha.0"
-  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wo-sdk/utils/-/@wo-sdk/utils-0.14.2-alpha.0.tgz#f3d51e3c2690c1f49c7e6b77e300a7f054b52aa5"
+  resolved "https://gitlab.com/api/v4/projects/55804737/packages/npm/@wings-corporation/utils/-/@wings-corporation/utils-0.14.2-alpha.0.tgz#f3d51e3c2690c1f49c7e6b77e300a7f054b52aa5"
   integrity sha1-89UePCaQwfScfmt34wCn8FS1KqU=
 
 "@xtuc/ieee754@^1.2.0":

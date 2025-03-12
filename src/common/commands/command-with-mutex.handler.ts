@@ -3,7 +3,7 @@ import {
   CorrelatableCommand,
   IMutexService,
   IUnitOfWorkService,
-} from '@wo-sdk/core';
+} from '@wings-corporation/core';
 
 import { ILogger } from '../interfaces';
 import { NoopLogger } from '../loggers';

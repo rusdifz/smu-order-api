@@ -1,25 +1,7 @@
 import { RETAIL_S_GROUP } from '@wings-online/app.constants';
-import { Division, Organization } from '@wo-sdk/core';
-
-import { UserIdentity } from '../interfaces';
+import { Organization } from '@wings-corporation/core';
 
 export class IdentityUtil {
-  /**
-   *
-   * @param identity
-   * @param division
-   * @returns
-   */
-  public static getDefaultAddressId(
-    identity: UserIdentity,
-    division: Division,
-  ): string | undefined {
-    const divisionInfo =
-      division === 'DRY' ? identity.division.dry : identity.division.frozen;
-    if (!divisionInfo) return undefined;
-    return divisionInfo.defaultDeliveryAddressId;
-  }
-
   /**
    *
    * @param externalId

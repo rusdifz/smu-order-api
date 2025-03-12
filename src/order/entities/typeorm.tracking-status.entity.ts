@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { DatetimeTransformer } from '@wings-online/common';
-import { Nullable } from '@wo-sdk/core';
+import { Nullable } from '@wings-corporation/core';
 
 import { TypeOrmOrderHeaderDummyEntity } from './typeorm.order-header-dummy.entity';
 import { TypeOrmOrderHeaderHistoryEntity } from './typeorm.order-header-history.entity';

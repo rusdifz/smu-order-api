@@ -6,17 +6,17 @@ import { RequestMethod, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { DomainException } from '@wo-sdk/core';
-import { ExtractRequestId, FastifyAdapter } from '@wo-sdk/nest-fastify';
+import { DomainException } from '@wings-corporation/core';
+import { ExtractRequestId, FastifyAdapter } from '@wings-corporation/nest-fastify';
 import {
   CatchAllExceptionFilter,
   DomainExceptionFilter,
   JoiSchemaValidationPipe,
   NotFoundExceptionFilter,
   ResponseEnvelopeInterceptor,
-} from '@wo-sdk/nest-http';
-import { Logger } from '@wo-sdk/nest-pino-logger';
-import { getXRayInstance } from '@wo-sdk/nest-xray';
+} from '@wings-corporation/nest-http';
+import { Logger } from '@wings-corporation/nest-pino-logger';
+import { getXRayInstance } from '@wings-corporation/nest-xray';
 
 import { ServiceName } from './app.constants';
 import { AppModule } from './app.module';

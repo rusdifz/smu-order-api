@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '@wings-online/auth';
-import { IIdentity } from '@wo-sdk/core';
-import { AuthModuleOptions, AuthOptionsFactory } from '@wo-sdk/nest-auth';
+import { IIdentity } from '@wings-corporation/core';
+import { AuthModuleOptions, AuthOptionsFactory } from '@wings-corporation/nest-auth';
 
 @Injectable()
 export class AuthModuleOptionsProvider implements AuthOptionsFactory {

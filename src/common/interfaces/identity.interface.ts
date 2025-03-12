@@ -1,4 +1,4 @@
-import { IIdentity } from '@wo-sdk/core';
+import { IIdentity } from '@wings-corporation/core';
 
 export type UserIdentity = IIdentity & {
   externalId: string;
@@ -13,6 +13,5 @@ export type DivisionInfo = {
 };
 
 export type IDivisionInfo = {
-  defaultDeliveryAddressId?: string;
   payerId?: string;
 };

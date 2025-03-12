@@ -1,4 +1,4 @@
-import { IIdentity } from '@wo-sdk/core';
+import { IIdentity } from '@wings-corporation/core';
 
 export class CacheUtil {
   public static getCacheKey(value: string): string {
@@ -18,6 +18,6 @@ export class CacheUtil {
   }
 
   public static getCacheKeyByParts(parts: string[]): string {
-    return this.getCacheKey(parts.join('/'));
+    return this.getCacheKey(parts.join(':'));
   }
 }

@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserIdentity } from '@wings-online/common';
-import { CorrelatableRequest } from '@wo-sdk/core';
-import { Identity } from '@wo-sdk/nest-http';
+import { CorrelatableRequest } from '@wings-corporation/core';
+import { Identity } from '@wings-corporation/nest-http';
 
 import { ChangeOrderBodyDto } from './change-order.body.dto';
 import { ChangeOrderCommand } from './change-order.command';

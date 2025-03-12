@@ -12,7 +12,7 @@ import {
 } from '@wings-online/order/order.constants';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
-import { InjectPinoLogger, PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { GetOrderInfoQuery } from './get-order-info.query';
 import { GetOrderInfoResult } from './get-order-info.result';

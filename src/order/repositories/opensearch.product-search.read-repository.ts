@@ -2,7 +2,7 @@ import { InjectOpensearchClient, OpensearchClient } from 'nestjs-opensearch';
 
 import { Injectable } from '@nestjs/common';
 import { OpensearchResult } from '@wings-online/common';
-import { InjectPinoLogger, PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { OpensearchItemEntity } from '../entities';
 import { IProductSearchReadRepository } from '../interfaces';

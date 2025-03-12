@@ -1,6 +1,6 @@
 import { OpensearchClient } from 'nestjs-opensearch';
 
-import { PinoLogger } from '@wo-sdk/nest-pino-logger';
+import { PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { IOpensearchReadRepository } from '../interfaces';
 
