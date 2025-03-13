@@ -32,10 +32,10 @@ update_task_definition() {
 
   image_repository=$DOCKER_REGISTRY/$IMAGE_NAME
 
-  if [[ -z "$CI_COMMIT_TAG" ]]; then
+  if [[ -z "$VERSION" ]]; then
     image_tag=latest
   else
-    image_tag=$CI_COMMIT_TAG
+    image_tag=$VERSION
   fi
 
   new_image_name="${image_repository}:${image_tag}"
