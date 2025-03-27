@@ -1,5 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import {
+  InjectPinoLogger,
+  PinoLogger,
+} from '@wings-corporation/nest-pino-logger';
 import { createBadRequestException } from '@wings-online/common';
 import {
   ILegacyOrderService,
@@ -12,7 +16,6 @@ import {
 } from '@wings-online/order/order.constants';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
-import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { GetOrderStatusHistoryQuery } from './get-order-status-history.query';
 import { GetOrderStatusHistoryResult } from './get-order-status-history.result';

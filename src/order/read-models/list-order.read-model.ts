@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
 
+import { Nullable } from '@wings-corporation/core';
 import { LEGACY_ORDER_DEFAULT_TIMEZONE } from '@wings-online/app.constants';
 import { ReadModel } from '@wings-online/common';
-import { Nullable } from '@wings-corporation/core';
 
 import {
   DEFAULT_CANCEL_DURATION,

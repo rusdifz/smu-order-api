@@ -1,8 +1,12 @@
 import { InjectOpensearchClient, OpensearchClient } from 'nestjs-opensearch';
 
-import { Injectable } from '@nestjs/common';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  InjectPinoLogger,
+  PinoLogger,
+} from '@wings-corporation/nest-pino-logger';
 import { OpensearchResult } from '@wings-online/common';
-import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { OpensearchItemEntity } from '../entities';
 import { IProductSearchReadRepository } from '../interfaces';
@@ -19,9 +23,11 @@ export class OpensearchProductSearchReadRepository
     readonly searchClient: OpensearchClient,
     @InjectPinoLogger(OpensearchProductSearchReadRepository.name)
     readonly logger: PinoLogger,
+    @Inject(CACHE_MANAGER)
+    readonly cacheManager: Cache,
   ) {
     const indexName = 'products';
-    super(searchClient, logger, indexName);
+    super(searchClient, logger, indexName, cacheManager);
   }
 
   /**

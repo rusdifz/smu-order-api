@@ -1,4 +1,5 @@
 export * from './auth-module-options.provider';
+export * from './cache-manager-options.provider';
 export * from './event-bridge-client.factory-provider';
 export * from './event-bus.factory-provider';
 export * from './opensearch-module-options.provider';

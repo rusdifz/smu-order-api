@@ -7,9 +7,9 @@ import {
   Request,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { UserIdentity } from '@wings-online/common';
 import { CorrelatableRequest } from '@wings-corporation/core';
 import { Identity } from '@wings-corporation/nest-http';
+import { UserIdentity } from '@wings-online/common';
 
 import { ChangeOrderBodyDto } from './change-order.body.dto';
 import { ChangeOrderCommand } from './change-order.command';

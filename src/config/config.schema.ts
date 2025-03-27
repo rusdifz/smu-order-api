@@ -24,6 +24,7 @@ const configSchema = Joi.object({
   PG_MAX_POOL_SIZE: Joi.number().optional().default(10),
   PG_CONNECTION_TIMEOUT_MILLIS: Joi.number().optional().default(5000),
   PG_IDLE_TIMEOUT_MILLIS: Joi.number().optional().default(30000),
+  REDIS_URL: Joi.string().required(),
 });
 
 export { configSchema };

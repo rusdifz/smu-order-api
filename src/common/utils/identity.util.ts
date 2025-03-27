@@ -1,5 +1,5 @@
-import { RETAIL_S_GROUP } from '@wings-online/app.constants';
 import { Organization } from '@wings-corporation/core';
+import { RETAIL_S_GROUP } from '@wings-online/app.constants';
 
 export class IdentityUtil {
   /**
