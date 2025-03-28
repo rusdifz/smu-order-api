@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { UserIdentity } from '@wings-online/common';
 import { Identity } from '@wings-corporation/nest-http';
+import { UserIdentity } from '@wings-online/common';
 
 import { GetInvoiceOverdueQuery } from './get-invoice-overdue.query';
 

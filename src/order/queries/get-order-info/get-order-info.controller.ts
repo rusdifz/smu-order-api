@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { UserIdentity } from '@wings-online/common';
 import { Identity } from '@wings-corporation/nest-http';
+import { UserIdentity } from '@wings-online/common';
 
 import { GetOrderInfoQuery } from './get-order-info.query';
 import { GetOrderInfoQueryDto } from './get-order-info.query.dto';

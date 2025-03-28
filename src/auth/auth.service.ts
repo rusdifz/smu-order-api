@@ -1,8 +1,10 @@
+import ms from 'ms';
 import { DataSource } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { IdentityUtil, UserIdentity } from '@wings-online/common';
+import { CacheUtil } from '@wings-online/common/utils/cache.util';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
 
@@ -29,7 +31,7 @@ export class AuthService {
       .createQueryBuilder(TypeOrmUserEntity, 'identity')
       .innerJoinAndSelect('identity.infos', 'info')
       .where('identity.externalId = :externalId', { externalId })
-      // .cache(CacheUtil.getCacheKey(`user:${externalId}:identity`), ms('1h'))
+      .cache(CacheUtil.getCacheKey(`user:${externalId}:identity`), ms('10m'))
       .getOne();
 
     if (entity) {

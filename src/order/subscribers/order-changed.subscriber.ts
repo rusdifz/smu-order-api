@@ -2,7 +2,10 @@ import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { IEventBus, IIntegrationEvent } from '@wings-corporation/core';
 import { EVENT_BUS } from '@wings-corporation/nest-event-bus';
-import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
+import {
+  InjectPinoLogger,
+  PinoLogger,
+} from '@wings-corporation/nest-pino-logger';
 
 import { OrderChanged } from '../domains/events';
 

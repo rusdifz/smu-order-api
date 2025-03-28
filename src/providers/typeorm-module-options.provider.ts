@@ -4,9 +4,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { XRAY_CLIENT, XRayClient } from '@wings-corporation/nest-xray';
 import { ServiceReversedFQDN } from '@wings-online/app.constants';
 import { TypeOrmPinoLogger } from '@wings-online/common';
-import { XRAY_CLIENT, XRayClient } from '@wings-corporation/nest-xray';
 
 @Injectable()
 export class TypeOrmModuleOptionsProvider implements TypeOrmOptionsFactory {
@@ -33,8 +33,10 @@ export class TypeOrmModuleOptionsProvider implements TypeOrmOptionsFactory {
         ],
       },
       cache: {
-        type: 'database',
-        tableName: this.CACHE_TABLE_NAME,
+        type: 'redis',
+        options: {
+          url: this.config.getOrThrow('REDIS_URL'),
+        },
       },
       extra: {
         max: this.config.getOrThrow('PG_MAX_POOL_SIZE'),

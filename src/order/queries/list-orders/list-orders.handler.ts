@@ -1,6 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import {
+  InjectPinoLogger,
+  PinoLogger,
+} from '@wings-corporation/nest-pino-logger';
+import {
   IOrderReadRepository,
   IProductSearchReadRepository,
 } from '@wings-online/order/interfaces';
@@ -8,7 +12,6 @@ import {
   ORDER_READ_REPOSITORY,
   PRODUCT_SEARCH_READ_REPOSITORY,
 } from '@wings-online/order/order.constants';
-import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
 
 import { ListOrdersQuery } from './list-orders.query';
 import { ListOrdersResult } from './list-orders.result';

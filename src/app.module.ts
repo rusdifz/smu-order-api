@@ -1,17 +1,18 @@
 import { ValidationOptions } from 'joi';
 
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HealthModule, TypeOrmPinoLogger } from '@wings-online/common';
 import { MutexModule } from '@wings-corporation/nest-advisory-lock-mutex';
 import { AuthModule } from '@wings-corporation/nest-auth';
 import { EventBusModule } from '@wings-corporation/nest-event-bus';
 import { LoggerModule, XRayLogger } from '@wings-corporation/nest-pino-logger';
 import { TracingModule, XRAY_CLIENT } from '@wings-corporation/nest-xray';
+import { HealthModule, TypeOrmPinoLogger } from '@wings-online/common';
 
 import { EVENTBRIDGE_CLIENT_TOKEN, S3_CLIENT_TOKEN } from './app.constants';
 import { AuthService } from './auth';
@@ -25,6 +26,7 @@ import { ParameterModule } from './parameter/parameter.module';
 import { ParameterService } from './parameter/parameter.service';
 import {
   AuthModuleOptionsProvider,
+  CacheManagerOptionsProvider,
   EventBridgeClientFactoryProvider,
   EventBusFactoryProvider,
   S3ClientFactoryProvider,
@@ -84,6 +86,12 @@ import {
     }),
     OrderModule,
     HealthModule,
+    CacheModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: CacheManagerOptionsProvider,
+      imports: [ConfigModule],
+    }),
     InvoiceModule,
     ParameterModule.forRoot(),
     ScheduleModule.forRoot(),

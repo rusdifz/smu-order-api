@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { UserIdentity } from '@wings-online/common';
 import { Identity } from '@wings-corporation/nest-http';
+import { UserIdentity } from '@wings-online/common';
 
 import { ListInvoicesQuery } from './list-invoices.query';
 import { ListInvoicesQueryDto } from './list-invoices.query.dto';

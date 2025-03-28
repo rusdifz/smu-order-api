@@ -7,7 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DomainException } from '@wings-corporation/core';
-import { ExtractRequestId, FastifyAdapter } from '@wings-corporation/nest-fastify';
+import {
+  ExtractRequestId,
+  FastifyAdapter,
+} from '@wings-corporation/nest-fastify';
 import {
   CatchAllExceptionFilter,
   DomainExceptionFilter,

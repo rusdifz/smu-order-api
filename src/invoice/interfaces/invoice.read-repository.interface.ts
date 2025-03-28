@@ -1,5 +1,5 @@
-import { UserIdentity } from '@wings-online/common';
 import { Collection, PaginatedCollection } from '@wings-corporation/core';
+import { UserIdentity } from '@wings-online/common';
 
 import { InvoiceStatus, InvoiceType } from '../invoice.constants';
 import {

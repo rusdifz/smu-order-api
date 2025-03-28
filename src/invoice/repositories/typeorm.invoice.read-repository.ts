@@ -2,10 +2,11 @@ import { DateTime } from 'luxon';
 import { DataSource } from 'typeorm';
 
 import { InjectDataSource } from '@nestjs/typeorm';
-import { PaginationUtil, UserIdentity } from '@wings-online/common';
-import { BaseReadRepository } from '@wings-online/common/repositories/base.read-repository';
 import { Collection, PaginatedCollection } from '@wings-corporation/core';
 import { DEFAULT_QUERY_LIMIT } from '@wings-corporation/nest-http';
+import { PaginationUtil, UserIdentity } from '@wings-online/common';
+import { BaseReadRepository } from '@wings-online/common/repositories/base.read-repository';
+import { CacheUtil } from '@wings-online/common/utils/cache.util';
 
 import {
   TypeOrmBillingHeaderEntity,
@@ -116,15 +117,20 @@ export class TypeOrmInvoiceReadRepository
       };
     }
 
+    const limit = options.limit || DEFAULT_QUERY_LIMIT;
+    const cursorKey = options.cursor || 'NO_CURSOR';
+    const statusKey =
+      status === 'PAID' ? InvoiceStatusEnum.PAID : InvoiceStatusEnum.UNPAID;
+
     const query = this.dataSource
       .createQueryBuilder(TypeOrmInvoiceEntity, 'invoice')
       .andWhere('invoice.status = :status', {
-        status:
-          status === 'PAID' ? InvoiceStatusEnum.PAID : InvoiceStatusEnum.UNPAID,
+        status: statusKey,
       })
       .andWhere('invoice.payer in (:...payerIds)', { payerIds })
       .addOrderBy('invoice.date', 'DESC')
-      .addOrderBy('invoice.id', 'ASC');
+      .addOrderBy('invoice.id', 'ASC')
+      .limit(limit);
 
     const countQuery = query.clone();
 
@@ -145,8 +151,21 @@ export class TypeOrmInvoiceReadRepository
       }
     }
 
-    const limit = options.limit || DEFAULT_QUERY_LIMIT;
-    query.limit(limit);
+    const ttl = CacheUtil.getTTLToEndOfDayInMs();
+
+    query.cache(
+      CacheUtil.getCacheKey(
+        `order:${identity.externalId}:invoices:${statusKey}:${limit}:${cursorKey}`,
+      ),
+      ttl,
+    );
+
+    countQuery.cache(
+      CacheUtil.getCacheKey(
+        `order:${identity.externalId}:invoices:count:${statusKey}:${limit}:${cursorKey}`,
+      ),
+      ttl,
+    );
 
     const [entities, rowCount] = await Promise.all([
       query.getMany(),

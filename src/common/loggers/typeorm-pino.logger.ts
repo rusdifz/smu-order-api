@@ -1,7 +1,10 @@
 import { Logger } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
-import { InjectPinoLogger, PinoLogger } from '@wings-corporation/nest-pino-logger';
+import {
+  InjectPinoLogger,
+  PinoLogger,
+} from '@wings-corporation/nest-pino-logger';
 
 export const HEARTBEAT_QUERY = 'SELECT 1';
 export const SCHEMA_DISCOVERY_QUERY = 'SELECT * FROM current_schema()';

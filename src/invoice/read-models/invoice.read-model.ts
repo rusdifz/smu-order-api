@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { ReadModel } from '@wings-online/common';
 import { Nullable } from '@wings-corporation/core';
+import { ReadModel } from '@wings-online/common';
 
 export type InvoiceReadModelProps = {
   id: number;
