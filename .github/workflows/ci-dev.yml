@@ -1,80 +1,77 @@
-name: deploy smu-wo-order-api Prod
+name: deploy smu-wo-order-api dev
 
 on:
-  workflow_dispatch:
-    inputs:
-      image_tag:
-        description: 'Deploy smu-wo-order-api Prod'
-        required: true
-        default: 'latest'
+  push:
+    branches:
+      - dev
 
 jobs:
-    replicate-and-deploy:
-      runs-on: ubuntu-latest
+  replicate-and-deploy:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        - name: Get git hash
-          id: git_hash
-          run: |
-            GIT_HASH=$(git rev-parse --short HEAD)
-            echo "GIT_HASH=$GIT_HASH" >> $GITHUB_ENV
+      - name: Get git hash
+        id: git_hash
+        run: |
+          GIT_HASH=$(git rev-parse --short HEAD)
+          echo "GIT_HASH=$GIT_HASH" >> $GITHUB_ENV
 
-        - name: Get the current date in GMT+7
-          id: get_date
-          run: |
-            # Get the current date in GMT+7 (WIB)
-            BUILD_DATE=$(TZ='Asia/Jakarta' date '+%d/%m/%Y, %H:%M:%S WIB')
-            echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+      #- name: Get the current date in GMT+7
+      #  id: get_date
+      #  run: |
+      #    # Get the current date in GMT+7 (WIB)
+      #    BUILD_DATE=$(TZ='Asia/Jakarta' date '+%d/%m/%Y, %H:%M:%S WIB')
+      #    echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+      #
+      #- name: Extract version
+      #  id: extract_version
+      #  run: |
+      #    VERSION=$(jq -r '.version' package.json)
+      #    echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-        - name: Extract version
-          id: extract_version
-          run: |
-            VERSION=$(jq -r '.version' package.json)
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ap-southeast-3
 
-        - name: Set up AWS CLI
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD_SING }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD_SING }}
-            aws-region: ap-southeast-1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+          scope: '@wings-corporation'
 
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 20
-            registry-url: https://npm.pkg.github.com/
-            scope: '@wings-corporation'
+      - name: Build project
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
 
-        - name: Build project
-          run: |
-            yarn install --frozen-lockfile
-            yarn build
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            NPM_GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com
 
-        - name: Login to Amazon ECR
-          run: |
-            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 200748807270.dkr.ecr.ap-southeast-1.amazonaws.com
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            --build-arg NPM_GITHUB_TOKEN=${{ secrets.NPM_GITHUB_TOKEN }} \
+            -t 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:${{ env.GIT_HASH }} .
+          docker push 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:${{ env.GIT_HASH }}
 
-        - name: Build and push Docker image
-          run: |
-            docker build \
-              --build-arg NPM_GITHUB_TOKEN=${{ secrets.NPM_GITHUB_TOKEN }} \
-              -t 200748807270.dkr.ecr.ap-southeast-1.amazonaws.com/prod-wo-order-api:${{ env.VERSION }} .
-            docker push 200748807270.dkr.ecr.ap-southeast-1.amazonaws.com/prod-wo-order-api:${{ env.VERSION }}
-
-        - name: Run ECS update
-          env:
-            DOCKER_REGISTRY: 200748807270.dkr.ecr.ap-southeast-1.amazonaws.com
-            IMAGE_NAME: prod-wo-order-api
-            CI_AWS_ECS_CLUSTER: prod-wo-order-cluster
-            CI_AWS_ECS_SERVICE: prod-wo-order-api
-            CI_AWS_ECS_TASK_DEFINITION: prod-wo-order-api-task
-            VERSION: ${{ env.VERSION }}
-          run: |
-            chmod +x ci/bin/ecs
-            ./ci/bin/ecs update-task-definition
+      - name: Run ECS update
+        env:
+          DOCKER_REGISTRY: 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com
+          IMAGE_NAME: dev-wo-order-api
+          CI_AWS_ECS_CLUSTER: dev-wo-order-cluster
+          CI_AWS_ECS_SERVICE: dev-wo-order-api
+          CI_AWS_ECS_TASK_DEFINITION: dev-wo-order-api-task
+          VERSION: ${{ env.GIT_HASH }}
+        run: |
+          chmod +x ci/bin/ecs
+          ./ci/bin/ecs update-task-definition
