@@ -4,4 +4,6 @@ export * from './event-bridge-client.factory-provider';
 export * from './event-bus.factory-provider';
 export * from './opensearch-module-options.provider';
 export * from './s3-client.factory-provider';
+export * from './typeorm-module-options-s4.provider';
 export * from './typeorm-module-options.provider';
+
