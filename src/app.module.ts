@@ -77,7 +77,7 @@ import {
     MutexModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        connectionString: config.getOrThrow('PG_DATABASE_S4_WRITE_URL'),
+        connectionString: config.getOrThrow('PG_DATABASE_WRITE_URL_S4'),
       }),
     }),
     EventBusModule.forRootAsync({

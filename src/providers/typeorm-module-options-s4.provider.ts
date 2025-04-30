@@ -25,11 +25,11 @@ export class TypeOrmModuleOptionsS4Provider implements TypeOrmOptionsFactory {
       type: 'postgres',
       replication: {
         master: {
-          url: this.config.getOrThrow('PG_DATABASE_S4_WRITE_URL'),
+          url: this.config.getOrThrow('PG_DATABASE_WRITE_URL_S4'),
         },
         slaves: [
           {
-            url: this.config.getOrThrow('PG_DATABASE_S4_READ_URL'),
+            url: this.config.getOrThrow('PG_DATABASE_READ_URL_S4'),
           },
         ],
       },
