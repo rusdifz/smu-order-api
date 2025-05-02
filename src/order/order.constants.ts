@@ -13,6 +13,7 @@ export type DeliveryAddressType = Division | 'ANY';
 export const ORDER_WRITE_REPOSITORY = 'ORDER_WRITE_REPOSITORY';
 
 export const LEGACY_ORDER_SERVICE = 'LEGACY_ORDER_SERVICE';
+export const SFA_SERVICE = 'SFA_SERVICE';
 
 export enum FlagCancelOrder {
   SKIP = 'skip',

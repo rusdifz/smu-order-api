@@ -13,6 +13,10 @@ import {
 } from './list-order-history';
 import { ListOrdersController, ListOrdersHandler } from './list-orders';
 import {
+  ListOrdersReturnTkgController,
+  ListOrdersReturnTkgHandler,
+} from './list-orders-return-tkg';
+import {
   SuggestSearchOrderController,
   SuggestSearchOrderHandler,
 } from './suggest-search-order';
@@ -24,6 +28,7 @@ export const QueryControllers = [
   GetOrderHistoryInfoController,
   GetOrderStatusHistoryController,
   SuggestSearchOrderController,
+  ListOrdersReturnTkgController,
 ];
 
 export const QueryHandlers = [
@@ -33,4 +38,5 @@ export const QueryHandlers = [
   GetOrderHistoryInfoHandler,
   GetOrderStatusHistoryHandler,
   SuggestSearchOrderHandler,
+  ListOrdersReturnTkgHandler,
 ];

@@ -37,6 +37,7 @@ import {
   ORDER_READ_REPOSITORY,
   ORDER_WRITE_REPOSITORY,
   PRODUCT_SEARCH_READ_REPOSITORY,
+  SFA_SERVICE,
 } from './order.constants';
 import { QueryControllers, QueryHandlers } from './queries';
 import {
@@ -45,6 +46,7 @@ import {
   TypeOrmOrderWriteRepository,
 } from './repositories';
 import { LegacyOrderService } from './services/legacy-order.service';
+import { SfaService } from './services/sfa.service';
 import { OrderChangedSubscriber } from './subscribers';
 
 const Entities = [
@@ -91,6 +93,10 @@ const Services: Provider<any>[] = [
   {
     provide: LEGACY_ORDER_SERVICE,
     useClass: LegacyOrderService,
+  },
+  {
+    provide: SFA_SERVICE,
+    useClass: SfaService,
   },
 ];
 
