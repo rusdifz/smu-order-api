@@ -2,6 +2,7 @@ export * from './delivery-address.read-model';
 export * from './delivery-item.read-model';
 export * from './delivery.read-model';
 export * from './order-item.read-model';
+export * from './order-return.read-model';
 export * from './order.read-model';
 export * from './parameter.read-model';
 export * from './product-search.read-model';
