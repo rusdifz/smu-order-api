@@ -1,4 +1,4 @@
-export class ListOrdersReturnTkgResult {
+export class ListOrdersReturnResult {
 
   constructor(props: any) {
     let listData: any[] = [];

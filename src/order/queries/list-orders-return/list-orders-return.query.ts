@@ -1,15 +1,15 @@
 import { IQuery } from '@nestjs/cqrs';
 import { UserIdentity } from '@wings-online/common';
 
-export class ListOrdersReturnTkgQueryProps {
+export class ListOrdersReturnQueryProps {
   readonly identity: UserIdentity;
   readonly docNo?: string;
   readonly page?: number;
   readonly limit?: number;
 }
 
-export class ListOrdersReturnTkgQuery extends ListOrdersReturnTkgQueryProps implements IQuery {
-  constructor(props: ListOrdersReturnTkgQueryProps) {
+export class ListOrdersReturnQuery extends ListOrdersReturnQueryProps implements IQuery {
+  constructor(props: ListOrdersReturnQueryProps) {
     super();
     Object.assign(this, props);
   }

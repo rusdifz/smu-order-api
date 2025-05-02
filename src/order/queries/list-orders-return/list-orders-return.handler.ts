@@ -12,21 +12,21 @@ import {
 } from '@wings-online/order/order.constants';
 
 import { createBadRequestException } from '@wings-online/common';
-import { ListOrdersReturnTkgQuery } from './list-orders-return-tkg.query';
-import { ListOrdersReturnTkgResult } from './list-orders-return-tkg.result';
+import { ListOrdersReturnQuery } from './list-orders-return.query';
+import { ListOrdersReturnResult } from './list-orders-return.result';
 
-@QueryHandler(ListOrdersReturnTkgQuery)
-export class ListOrdersReturnTkgHandler
-  implements IQueryHandler<ListOrdersReturnTkgQuery, ListOrdersReturnTkgResult>
+@QueryHandler(ListOrdersReturnQuery)
+export class ListOrdersReturnHandler
+  implements IQueryHandler<ListOrdersReturnQuery, ListOrdersReturnResult>
 {
   constructor(
-    @InjectPinoLogger(ListOrdersReturnTkgHandler.name)
+    @InjectPinoLogger(ListOrdersReturnHandler.name)
     readonly logger: PinoLogger,
     @Inject(SFA_SERVICE)
     private readonly SfaService: ISfaService,
   ) {}
 
-  async execute(query: ListOrdersReturnTkgQuery): Promise<ListOrdersReturnTkgResult> {
+  async execute(query: ListOrdersReturnQuery): Promise<ListOrdersReturnResult> {
     this.logger.trace(`BEGIN`);
     this.logger.info({ query });
 
@@ -53,6 +53,6 @@ export class ListOrdersReturnTkgHandler
     this.logger.info({ queryTime }, 'list-order-query');
 
     this.logger.trace(`END`);
-    return new ListOrdersReturnTkgResult(order);
+    return new ListOrdersReturnResult(order);
   }
 }

@@ -3,7 +3,7 @@ import { JoiSchema } from 'joi-class-decorators';
 
 import { CursorPaginationQueryDto } from '@wings-corporation/nest-http';
 
-export class ListOrdersReturnTkgQueryDto extends CursorPaginationQueryDto {
+export class ListOrdersReturnQueryDto extends CursorPaginationQueryDto {
   @JoiSchema(Joi.number().required())
   readonly page: number;
 
