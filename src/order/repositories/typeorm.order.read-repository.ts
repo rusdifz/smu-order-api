@@ -3,7 +3,7 @@ import { Brackets, DataSource, SelectQueryBuilder } from 'typeorm';
 
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Collection, PaginatedCollection } from '@wings-corporation/core';
-import { DEFAULT_QUERY_LIMIT, DEFAULT_QUERY_PAGE } from '@wings-corporation/nest-http';
+import { DEFAULT_QUERY_LIMIT } from '@wings-corporation/nest-http';
 import { LEGACY_ORDER_DEFAULT_TIMEZONE } from '@wings-online/app.constants';
 import {
   BaseReadModelMapper,
