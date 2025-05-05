@@ -105,4 +105,86 @@ export class SfaService implements ISfaService {
     this.logger.trace({ methodName }, 'END');
     return data;
   }
+  /**
+   *
+   * @param params
+   */
+  async listReturnOrder(params: {
+    custId: string,
+    docNo: string,
+    limit: number,
+    page: number,
+  }): Promise<any> {
+    const methodName = 'listReturnOrder';
+    this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
+
+    const parameterOrderType = await this.parameterService.getOne(
+      ParameterKeys.RETURN_ORDER_TYPE,
+    );
+    if(!parameterOrderType){
+      throw Error(`Not maintain Parameter: ${ParameterKeys.RETURN_ORDER_TYPE}`);
+    }
+
+    const encodedOrderType = encodeURIComponent(parameterOrderType.value);
+    let query = encodedOrderType ? `orderTypeIdIn=${encodedOrderType}` : '';
+    if (params.custId) {
+      query += query ? `&custId=${params.custId}` : `custId=${params.custId}`;
+    }
+
+    if (params.docNo) {
+      query += query ? `&docNo=${params.docNo}` : `docNo=${params.docNo}`;
+    }
+
+    if (params.limit && params.limit > 0) {
+      query += query ? `&limit=${params.limit}` : `limit=${params.limit}`;
+    }
+    else{
+      query += query ? `&limit=10` : `limit=10`;
+    }
+
+    if (params.page && params.page > 0) {
+      query += query ? `&page=${params.page}` : `page=${params.page}`;
+    }
+    else{
+      query += query ? `&page=1` : `page=1`;
+    }
+    
+    const url = `${this.sfaApiUrl}/returntkg/paginate?${query}`;
+
+    const request = this.httpService
+      .get<any>(url, {
+        timeout: this.timeout,
+      })
+      .pipe(
+        tap((response) => this.logger.info({ methodName, response })),
+        catchError((error: AxiosError) => {
+          this.logger.error({
+            methodName,
+            errorContext: 'SFA API Error',
+            error: {
+              message: error.message,
+              data: error.response?.data,
+            },
+          });
+          throw error;
+        }),
+      );
+      
+    const { status, data } = await firstValueFrom(request);
+    if (status !== 200) {
+      this.logger.error({
+        methodName,
+        errorContext: 'SFA API Error',
+        error: {
+          message: data.error,
+          data,
+        },
+      });
+      throw Error(`SFA API Error: ${data.error}`);
+    }
+
+    this.logger.trace({ methodName }, 'END');
+    return data;
+  }
+
 }

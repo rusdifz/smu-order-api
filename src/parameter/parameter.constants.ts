@@ -3,4 +3,5 @@ export const ParameterKeys = {
   CANCEL_DURATION: 'cancel_duration',
   CUST_GROUP_RETAIL: 'cust_group_retail',
   TKG_ORDER_TYPE: 'tkg_order_type',
+  RETURN_ORDER_TYPE: 'retur_order_type',
 };

@@ -18,8 +18,8 @@ export class ListOrdersReturnResult {
         page: props.data.page,
         limit: props.data.limit,
         total: props.data.total,
-        orderBy: props.data.orderBy,
-        order: props.data.order,
+        // orderBy: props.data.orderBy,
+        // order: props.data.order,
       },
       listData
     };

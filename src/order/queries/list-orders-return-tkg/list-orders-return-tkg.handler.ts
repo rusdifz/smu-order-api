@@ -5,9 +5,11 @@ import {
   PinoLogger,
 } from '@wings-corporation/nest-pino-logger';
 import {
+  IOrderReadRepository,
   ISfaService
 } from '@wings-online/order/interfaces';
 import {
+  ORDER_READ_REPOSITORY,
   SFA_SERVICE
 } from '@wings-online/order/order.constants';
 
@@ -24,6 +26,8 @@ export class ListOrdersReturnTkgHandler
     readonly logger: PinoLogger,
     @Inject(SFA_SERVICE)
     private readonly SfaService: ISfaService,
+    @Inject(ORDER_READ_REPOSITORY)
+    readonly repository: IOrderReadRepository,
   ) {}
 
   async execute(query: ListOrdersReturnTkgQuery): Promise<ListOrdersReturnTkgResult> {
@@ -35,24 +39,51 @@ export class ListOrdersReturnTkgHandler
 
     const { 
       docNo, 
-      limit, 
+      limitSFA, 
+      limitWO,
+      limitWOHist,
       page, 
       identity 
     } = query;
     if (!identity.externalId) throw createBadRequestException('custid-is-required');
 
-    const order = await this.SfaService.listReturnTkg({
+    const orderSFA = await this.SfaService.listReturnTkg({
       custId: identity.externalId,
       docNo,
-      limit, 
+      limit: limitSFA, 
       page, 
     });
-    if (!order) throw createBadRequestException('something-wrong-happened-with-sfa-service');
-
+    if (!orderSFA) throw createBadRequestException('something-wrong-happened-with-sfa-service');
     queryTime = performance.now() - queryTime;
-    this.logger.info({ queryTime }, 'list-order-query');
+    this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
+
+    const [orderWO, orderWOHist] = await Promise.all([
+      this.repository.listOrderReturn(
+        identity,
+        {
+          docNo
+        },
+        {
+          limit: limitWO,
+          page,
+        },
+      ),
+      this.repository.listOrderHistoryReturn(
+        identity,
+        {
+          docNo
+        },
+        {
+          limit: limitWOHist,
+          page,
+        },
+      )
+    ]);
+    
+    queryTime = performance.now() - queryTime;
+    this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
 
     this.logger.trace(`END`);
-    return new ListOrdersReturnTkgResult(order);
+    return new ListOrdersReturnTkgResult(orderSFA, orderWO, orderWOHist);
   }
 }
