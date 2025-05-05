@@ -549,7 +549,7 @@ export class TypeOrmOrderReadRepository
     options?: { limit?: number; page?: number },
   ): Promise<any> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
-    const page = options?.page || DEFAULT_QUERY_PAGE;
+    const page = options?.page || 1;
 
     const queryAll = this.dataSource
       .createQueryBuilder(TypeOrmOrderHeaderEntity, 'order')
@@ -611,7 +611,7 @@ export class TypeOrmOrderReadRepository
     options?: { limit?: number; page?: number },
   ): Promise<any> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
-    const page = options?.page || DEFAULT_QUERY_PAGE;
+    const page = options?.page || 1;
     
     const queryAll = this.dataSource
       .createQueryBuilder(TypeOrmOrderHeaderHistoryEntity, 'order')
