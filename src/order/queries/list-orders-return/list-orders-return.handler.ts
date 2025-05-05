@@ -41,7 +41,7 @@ export class ListOrdersReturnHandler
     } = query;
     if (!identity.externalId) throw createBadRequestException('custid-is-required');
 
-    const order = await this.SfaService.listReturnTkg({
+    const order = await this.SfaService.listReturnOrder({
       custId: identity.externalId,
       docNo,
       limit, 
@@ -50,7 +50,7 @@ export class ListOrdersReturnHandler
     if (!order) throw createBadRequestException('something-wrong-happened-with-sfa-service');
 
     queryTime = performance.now() - queryTime;
-    this.logger.info({ queryTime }, 'list-order-query');
+    this.logger.info({ queryTime }, 'list-order-return-query');
 
     this.logger.trace(`END`);
     return new ListOrdersReturnResult(order);

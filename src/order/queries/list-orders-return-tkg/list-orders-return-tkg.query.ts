@@ -5,7 +5,9 @@ export class ListOrdersReturnTkgQueryProps {
   readonly identity: UserIdentity;
   readonly docNo?: string;
   readonly page?: number;
-  readonly limit?: number;
+  readonly limitSFA?: number;
+  readonly limitWO?: number;
+  readonly limitWOHist?: number;
 }
 
 export class ListOrdersReturnTkgQuery extends ListOrdersReturnTkgQueryProps implements IQuery {

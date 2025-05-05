@@ -3,7 +3,7 @@ import { Brackets, DataSource, SelectQueryBuilder } from 'typeorm';
 
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Collection, PaginatedCollection } from '@wings-corporation/core';
-import { DEFAULT_QUERY_LIMIT } from '@wings-corporation/nest-http';
+import { DEFAULT_QUERY_LIMIT, DEFAULT_QUERY_PAGE } from '@wings-corporation/nest-http';
 import { LEGACY_ORDER_DEFAULT_TIMEZONE } from '@wings-online/app.constants';
 import {
   BaseReadModelMapper,
@@ -20,6 +20,8 @@ import {
   TypeOrmOrderHeaderEntity,
   TypeOrmOrderHeaderHistoryEntity,
   TypeOrmOrderHeaderMainEntity,
+  TypeOrmOrderItemEntity,
+  TypeOrmOrderItemHistoryEntity,
 } from '../entities';
 import { TypeOrmOrderEntity } from '../entities/typeorm.order.entity';
 import { IOrderReadRepository, ListProductParams } from '../interfaces';
@@ -537,5 +539,130 @@ export class TypeOrmOrderReadRepository
     const entity = await query.getOne();
 
     return entity ? this.orderMapper.toReadModel(entity) : undefined;
+  }
+
+  async listOrderReturn(
+    identity: UserIdentity,
+    filter: {
+      docNo?: string;
+    },
+    options?: { limit?: number; page?: number },
+  ): Promise<any> {
+    const limit = options?.limit || DEFAULT_QUERY_LIMIT;
+    const page = options?.page || DEFAULT_QUERY_PAGE;
+
+    const queryAll = this.dataSource
+      .createQueryBuilder(TypeOrmOrderHeaderEntity, 'order')
+      .andWhere('order.customerId = :customerId', {
+        customerId: identity.externalId,
+      })
+      .addOrderBy('order.documentDate', 'DESC')
+      .addOrderBy('order.id', 'DESC')
+      .andWhere('order.deletedAt IS NULL')
+      .andWhere('order.status = :status', { status : OrderStatus.CONFIRMED});
+
+      
+    if (filter && filter.docNo) {
+      queryAll
+        .andWhere('order.documentNumber = :docNo', {docNo: filter.docNo})
+    }
+
+    const queryLimit = queryAll
+      .take(limit)
+      .skip((page - 1) * limit);
+
+    const countQuery = queryAll.clone();
+
+    const [entitiesHeader, rowCount] = await Promise.all([
+      queryLimit.getMany(),
+      countQuery.getCount(),
+    ]);
+
+    let data: any[] = [];
+    for (const header of entitiesHeader) {
+      const details = await this.dataSource
+        .createQueryBuilder(TypeOrmOrderItemEntity, 'detail')
+        .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+        .getMany();
+
+        data.push({
+          header,
+          details
+        });
+    };
+
+    return {
+      data: {
+        listData: data
+      },
+      metadata: {
+        page: page,
+        limit: limit,
+        total: rowCount,
+      }
+    };
+  }
+
+  async listOrderHistoryReturn(
+    identity: UserIdentity,
+    filter: {
+      docNo?: string;
+    },
+    options?: { limit?: number; page?: number },
+  ): Promise<any> {
+    const limit = options?.limit || DEFAULT_QUERY_LIMIT;
+    const page = options?.page || DEFAULT_QUERY_PAGE;
+    
+    const queryAll = this.dataSource
+      .createQueryBuilder(TypeOrmOrderHeaderHistoryEntity, 'order')
+      .andWhere('order.customerId = :customerId', {
+      customerId: identity.externalId,
+      })
+      .addOrderBy('order.documentDate', 'DESC')
+      .addOrderBy('order.id', 'DESC')
+      .andWhere('order.deletedAt IS NULL')
+      .andWhere('order.status NOT IN (:...statuses)', {
+        statuses: [OrderStatus.CONFIRMED, OrderStatus.NOT_CONFIRMED],
+      });
+
+    if (filter && filter.docNo) {
+      queryAll
+        .andWhere('order.documentNumber = :docNo', {docNo: filter.docNo})
+    }
+
+    const queryLimit = queryAll
+      .take(limit)
+      .skip((page - 1) * limit);
+
+    const countQuery = queryAll.clone();
+
+    const [entitiesHeader, rowCount] = await Promise.all([
+      queryLimit.getMany(),
+      countQuery.getCount(),
+    ]);
+
+    let data: any[] = [];
+    for (const header of entitiesHeader) {
+      const details = await this.dataSource
+        .createQueryBuilder(TypeOrmOrderItemHistoryEntity, 'detail')
+        .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+        .getMany();
+
+        data.push({
+          header,
+          details
+        });
+    };
+
+    return {
+      data: {
+        listData: data
+      },
+      metadata: {
+        page: page,
+        limit: limit,
+        total: rowCount,
+      }
+    };
   }
 }

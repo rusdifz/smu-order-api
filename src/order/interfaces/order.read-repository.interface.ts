@@ -63,4 +63,20 @@ export interface IOrderReadRepository {
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;
+  
+  listOrderReturn(
+    identity: UserIdentity,
+    filter?: {
+      docNo?: string;
+    },
+    options?: { limit?: number; page?: number },
+  ): Promise<any>;
+
+  listOrderHistoryReturn(
+    identity: UserIdentity,
+    filter?: {
+      docNo?: string;
+    },
+    options?: { limit?: number; page?: number },
+  ): Promise<any>;
 }
