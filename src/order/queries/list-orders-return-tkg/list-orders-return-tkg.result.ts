@@ -17,12 +17,12 @@ export class ListOrdersReturnTkgResult {
 
     for (const item of propsOrderWO.data.listData) {
       const data = {
-        status: Object.keys(OrderStatus).find(key => OrderStatus[key] === item?.header?.status),
+        status: Object.keys(OrderStatus).find(key => OrderStatus[key] == item?.header?.status),
         statusCode: item?.header?.status,
-        docNumber: item.header?.documentNumber,
-        date: item.header?.documentDate,
+        docNumber: item?.header?.documentNumber,
+        date: item?.header?.documentDate,
         reason: '',
-        items: item.details,
+        items: item?.details,
       };
       listData.push(data);
     }
@@ -31,10 +31,10 @@ export class ListOrdersReturnTkgResult {
       const data = {
         status: Object.keys(OrderStatus).find(key => OrderStatus[key] === item?.header?.status),
         statusCode: item?.header?.status,
-        docNumber: item.header?.documentNumber,
-        date: item.header?.documentDate,
+        docNumber: item?.header?.documentNumber,
+        date: item?.header?.documentDate,
         reason: '',
-        items: item.details,
+        items: item?.details,
       };
       listData.push(data);
     }
