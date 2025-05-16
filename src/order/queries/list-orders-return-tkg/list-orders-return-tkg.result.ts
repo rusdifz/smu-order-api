@@ -86,7 +86,7 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: '',
+        reason: item.details[0].returnReason,
         order_tkg_in: item.details?.filter((item) => item.orderType === 'ZS21'),
         order_tkg_out: item.details?.filter(
           (item) => item.orderType === 'ZS22',
@@ -104,7 +104,7 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: '',
+        reason: item.details[0].returnReason,
         order_tkg_in: item.details?.filter((item) => item.orderType === 'ZS21'),
         order_tkg_out: item.details?.filter(
           (item) => item.orderType === 'ZS22',

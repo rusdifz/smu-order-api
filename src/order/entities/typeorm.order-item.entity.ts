@@ -134,6 +134,9 @@ export class TypeOrmOrderItemEntity {
   @Column({ name: 'flag_recom' })
   readonly flagRecommendation: string;
 
+  @Column({ name: 'return_reason' })
+  readonly returnReason: string;
+
   @ManyToOne(() => TypeOrmOrderHeaderEntity, (header) => header.items)
   @JoinColumn({ name: 'm_order_header_id' })
   readonly header?: TypeOrmOrderHeaderEntity;
