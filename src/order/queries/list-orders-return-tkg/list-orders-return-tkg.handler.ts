@@ -4,16 +4,16 @@ import {
   InjectPinoLogger,
   PinoLogger,
 } from '@wings-corporation/nest-pino-logger';
+import { createBadRequestException } from '@wings-online/common';
 import {
   IOrderReadRepository,
-  ISfaService
+  ISfaService,
 } from '@wings-online/order/interfaces';
 import {
   ORDER_READ_REPOSITORY,
-  SFA_SERVICE
+  SFA_SERVICE,
 } from '@wings-online/order/order.constants';
 
-import { createBadRequestException } from '@wings-online/common';
 import { ListOrdersReturnTkgQuery } from './list-orders-return-tkg.query';
 import { ListOrdersReturnTkgResult } from './list-orders-return-tkg.result';
 
@@ -30,60 +30,72 @@ export class ListOrdersReturnTkgHandler
     readonly repository: IOrderReadRepository,
   ) {}
 
-  async execute(query: ListOrdersReturnTkgQuery): Promise<ListOrdersReturnTkgResult> {
+  async execute(
+    query: ListOrdersReturnTkgQuery,
+  ): Promise<ListOrdersReturnTkgResult> {
     this.logger.trace(`BEGIN`);
     this.logger.info({ query });
 
     let queryTime: number | undefined;
     queryTime = performance.now();
 
-    const { 
-      docNo, 
-      limitSFA, 
-      limitWO,
-      limitWOHist,
-      page, 
-      identity 
-    } = query;
-    if (!identity.externalId) throw createBadRequestException('custid-is-required');
+    const { docNo, limit, page, identity } = query;
+    if (!identity.externalId)
+      throw createBadRequestException('custid-is-required');
 
     const orderSFA = await this.SfaService.listReturnTkg({
       custId: identity.externalId,
       docNo,
-      limit: limitSFA, 
-      page, 
+      limit: limit,
+      page,
     });
-    if (!orderSFA) throw createBadRequestException('something-wrong-happened-with-sfa-service');
+    if (!orderSFA)
+      throw createBadRequestException(
+        'something-wrong-happened-with-sfa-service',
+      );
     queryTime = performance.now() - queryTime;
     this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
 
-    const [orderWO, orderWOHist] = await Promise.all([
+    const materialId = orderSFA.data.listData.flatMap((ent) => {
+      return ent.details.map((item) => item.materialId);
+    });
+
+    const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
+    const [materialForSFA, orderWO, orderWOHist] = await Promise.all([
+      this.repository.listMaterialForSFA(userType, materialId),
       this.repository.listOrderReturn(
         identity,
         {
-          docNo
+          docNo,
         },
         {
-          limit: limitWO,
+          limit: limit,
           page,
         },
       ),
       this.repository.listOrderHistoryReturn(
         identity,
         {
-          docNo
+          docNo,
         },
         {
-          limit: limitWOHist,
+          limit: limit,
           page,
         },
-      )
+      ),
     ]);
-    
+
     queryTime = performance.now() - queryTime;
     this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
 
     this.logger.trace(`END`);
-    return new ListOrdersReturnTkgResult(orderSFA, orderWO, orderWOHist);
+    return new ListOrdersReturnTkgResult(
+      materialForSFA,
+      page,
+      limit,
+      orderSFA,
+      orderWO,
+      orderWOHist,
+    );
   }
 }

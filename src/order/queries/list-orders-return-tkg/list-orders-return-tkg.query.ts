@@ -5,12 +5,13 @@ export class ListOrdersReturnTkgQueryProps {
   readonly identity: UserIdentity;
   readonly docNo?: string;
   readonly page?: number;
-  readonly limitSFA?: number;
-  readonly limitWO?: number;
-  readonly limitWOHist?: number;
+  readonly limit?: number;
 }
 
-export class ListOrdersReturnTkgQuery extends ListOrdersReturnTkgQueryProps implements IQuery {
+export class ListOrdersReturnTkgQuery
+  extends ListOrdersReturnTkgQueryProps
+  implements IQuery
+{
   constructor(props: ListOrdersReturnTkgQueryProps) {
     super();
     Object.assign(this, props);
