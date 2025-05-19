@@ -8,13 +8,7 @@ export class ListOrdersReturnTkgQueryDto extends CursorPaginationQueryDto {
   readonly page: number;
 
   @JoiSchema(Joi.number().required())
-  readonly limitSFA: number;
-
-  @JoiSchema(Joi.number().required())
-  readonly limitWO: number;
-
-  @JoiSchema(Joi.number().required())
-  readonly limitWOHist: number;
+  readonly limit: number;
 
   @JoiSchema(Joi.string().optional())
   readonly docNo: string;

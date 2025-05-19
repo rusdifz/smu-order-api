@@ -63,7 +63,9 @@ export interface IOrderReadRepository {
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;
-  
+
+  listMaterialForSFA(userType: string, material: string[]): Promise<any>;
+
   listOrderReturn(
     identity: UserIdentity,
     filter?: {

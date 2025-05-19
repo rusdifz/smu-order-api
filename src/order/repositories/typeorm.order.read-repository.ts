@@ -541,6 +541,24 @@ export class TypeOrmOrderReadRepository
     return entity ? this.orderMapper.toReadModel(entity) : undefined;
   }
 
+  async listMaterialForSFA(
+    userType: string,
+    materialId: string[],
+  ): Promise<any> {
+    const items = await this.dataSource.query(
+      `SELECT i.*, ii.*
+       FROM sales.item i
+       JOIN sales.item_info ii ON i.id = ii.item_id
+       WHERE i.entity = $1 and 
+       i.external_id = ANY($2)`,
+      [userType, materialId],
+    );
+
+    return {
+      items,
+    };
+  }
+
   async listOrderReturn(
     identity: UserIdentity,
     filter: {
@@ -559,17 +577,17 @@ export class TypeOrmOrderReadRepository
       .addOrderBy('order.documentDate', 'DESC')
       .addOrderBy('order.id', 'DESC')
       .andWhere('order.deletedAt IS NULL')
-      .andWhere('order.status = :status', { status : OrderStatus.CONFIRMED});
+      .andWhere('order.status = :status', { status: OrderStatus.CONFIRMED });
 
-      
     if (filter && filter.docNo) {
-      queryAll
-        .andWhere('order.documentNumber = :docNo', {docNo: filter.docNo})
+      queryAll.andWhere('order.documentNumber = :docNo', {
+        docNo: filter.docNo,
+      });
     }
 
-    const queryLimit = queryAll
-      .take(limit)
-      .skip((page - 1) * limit);
+    console.log('external id ' + identity.externalId);
+
+    const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
 
     const countQuery = queryAll.clone();
 
@@ -578,28 +596,82 @@ export class TypeOrmOrderReadRepository
       countQuery.getCount(),
     ]);
 
-    let data: any[] = [];
+    const groupedByDocNumber: Record<string, typeof entitiesHeader> = {};
+
     for (const header of entitiesHeader) {
-      const details = await this.dataSource
+      const docNumber = header.documentNumber;
+      if (!groupedByDocNumber[docNumber]) {
+        groupedByDocNumber[docNumber] = [];
+      }
+      groupedByDocNumber[docNumber].push(header);
+    }
+
+    const data: any[] = [];
+
+    for (const docNumber in groupedByDocNumber) {
+      const headers = groupedByDocNumber[docNumber];
+
+      const newestHeader = headers.reduce<TypeOrmOrderHeaderEntity | null>(
+        (latest, current) => {
+          return !latest || current.createdAt > latest.createdAt
+            ? current
+            : latest;
+        },
+        null,
+      );
+
+      if (!newestHeader) continue;
+
+      const headerIds = headers.map((h) => h.id);
+
+      const rawDetails = await this.dataSource
         .createQueryBuilder(TypeOrmOrderItemEntity, 'detail')
-        .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds })
         .getMany();
 
-        data.push({
-          header,
-          details
-        });
-    };
+      console.log('raw details');
+
+      // Map details and inject doc_type from matching header
+      const details = rawDetails.map((detail) => {
+        const matchingHeader = headers.find(
+          (h) => h.id === detail.orderHeaderId,
+        );
+        return {
+          ...detail,
+          // orderType: matchingHeader?.documentType ?? 'ZS22', // add doc_type
+          orderType: 'ZS21', // add doc_type
+        };
+      });
+
+      console.log(headers);
+      console.log(details);
+      data.push({
+        header: newestHeader,
+        details,
+      });
+    }
+
+    // for (const header of entitiesHeader) {
+    //   const details = await this.dataSource
+    //     .createQueryBuilder(TypeOrmOrderItemEntity, 'detail')
+    //     .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+    //     .getMany();
+
+    //   data.push({
+    //     header,
+    //     details,
+    //   });
+    // }
 
     return {
       data: {
-        listData: data
+        listData: data,
       },
       metadata: {
         page: page,
         limit: limit,
         total: rowCount,
-      }
+      },
     };
   }
 
@@ -612,11 +684,11 @@ export class TypeOrmOrderReadRepository
   ): Promise<any> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
     const page = options?.page || 1;
-    
+
     const queryAll = this.dataSource
       .createQueryBuilder(TypeOrmOrderHeaderHistoryEntity, 'order')
       .andWhere('order.customerId = :customerId', {
-      customerId: identity.externalId,
+        customerId: identity.externalId,
       })
       .addOrderBy('order.documentDate', 'DESC')
       .addOrderBy('order.id', 'DESC')
@@ -626,13 +698,12 @@ export class TypeOrmOrderReadRepository
       });
 
     if (filter && filter.docNo) {
-      queryAll
-        .andWhere('order.documentNumber = :docNo', {docNo: filter.docNo})
+      queryAll.andWhere('order.documentNumber = :docNo', {
+        docNo: filter.docNo,
+      });
     }
 
-    const queryLimit = queryAll
-      .take(limit)
-      .skip((page - 1) * limit);
+    const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
 
     const countQuery = queryAll.clone();
 
@@ -641,28 +712,28 @@ export class TypeOrmOrderReadRepository
       countQuery.getCount(),
     ]);
 
-    let data: any[] = [];
+    const data: any[] = [];
     for (const header of entitiesHeader) {
       const details = await this.dataSource
         .createQueryBuilder(TypeOrmOrderItemHistoryEntity, 'detail')
         .where('detail.m_order_header_id = :headerId', { headerId: header.id })
         .getMany();
 
-        data.push({
-          header,
-          details
-        });
-    };
+      data.push({
+        header,
+        details,
+      });
+    }
 
     return {
       data: {
-        listData: data
+        listData: data,
       },
       metadata: {
         page: page,
         limit: limit,
         total: rowCount,
-      }
+      },
     };
   }
 }
