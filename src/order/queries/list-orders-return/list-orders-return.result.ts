@@ -1,5 +1,4 @@
 export class ListOrdersReturnResult {
-
   constructor(props: any) {
     let listData: any[] = [];
     for (const item of props.data.listData) {
@@ -14,15 +13,14 @@ export class ListOrdersReturnResult {
     }
 
     return {
-      metaData: {
+      metadata: {
         page: props.data.page,
         limit: props.data.limit,
         total: props.data.total,
         // orderBy: props.data.orderBy,
         // order: props.data.order,
       },
-      listData
+      data: listData,
     };
   }
-  
 }
