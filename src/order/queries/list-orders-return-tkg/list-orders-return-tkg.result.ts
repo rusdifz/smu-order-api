@@ -1,7 +1,9 @@
 import { OrderStatus } from '@wings-online/order/order.constants';
+import { ParameterValue } from '@wings-online/parameter/interfaces';
 
 export class ListOrdersReturnTkgResult {
   constructor(
+    reasons: ParameterValue[],
     materialForSFA: any,
     page: any,
     limit: any,
@@ -62,11 +64,15 @@ export class ListOrdersReturnTkgResult {
         };
       });
 
+      const matchingReason = reasons.find(
+        (r) => r.value === item.header.reason,
+      );
+
       const data = {
         status: item.history[0].soStatus,
         docNumber: item.header.docNo,
         date: Math.floor(new Date(item.header.docDate).getTime() / 1000),
-        reason: item.header.reason,
+        reason: matchingReason?.desc,
         order_tkg_in: enrichedDetails.filter(
           (item) => item.orderType === 'ZS21',
         ),
@@ -75,10 +81,14 @@ export class ListOrdersReturnTkgResult {
         ),
       };
 
-      listData.push(data);
+      if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
+        listData.push(data);
     }
 
     for (const item of propsOrderWO.data.listData) {
+      const matchingReason = reasons.find(
+        (r) => r.value === item.details[0].returnReason,
+      );
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] == item?.header?.status,
@@ -86,17 +96,21 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: item.details[0].returnReason,
-        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZS21'),
+        reason: matchingReason?.desc,
+        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZT01'),
         order_tkg_out: item.details?.filter(
-          (item) => item.orderType === 'ZS22',
+          (item) => item.orderType === 'ZT02',
         ),
       };
 
-      listData.push(data);
+      if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
+        listData.push(data);
     }
 
     for (const item of propsOrderWOHist.data.listData) {
+      const matchingReason = reasons.find(
+        (r) => r.value === item.details[0].returnReason,
+      );
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] === item?.header?.status,
@@ -104,18 +118,19 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: item.details[0].returnReason,
-        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZS21'),
+        reason: matchingReason?.desc,
+        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZT01'),
         order_tkg_out: item.details?.filter(
-          (item) => item.orderType === 'ZS22',
+          (item) => item.orderType === 'ZT02',
         ),
       };
 
-      listData.push(data);
+      if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
+        listData.push(data);
     }
 
     return {
-      metaData: {
+      metadata: {
         page: page,
         limit: limit,
         total: listData.length,
@@ -137,7 +152,7 @@ export class ListOrdersReturnTkgResult {
         // orderBy: propsSFA.data.orderBy,
         // order: propsSFA.data.order,
       },
-      listData,
+      data: listData,
     };
   }
 }

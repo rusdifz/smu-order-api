@@ -1,5 +1,6 @@
 import { Collection, PaginatedCollection } from '@wings-corporation/core';
 import { UserIdentity } from '@wings-online/common';
+import { ParameterValue } from '@wings-online/parameter/interfaces';
 
 import { OrderState } from '../order.constants';
 import { OrderReadModel } from '../read-models';
@@ -63,6 +64,8 @@ export interface IOrderReadRepository {
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;
+
+  returnReason(): Promise<ParameterValue[]>;
 
   listMaterialForSFA(userType: string, material: string[]): Promise<any>;
 

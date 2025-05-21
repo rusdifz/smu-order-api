@@ -11,6 +11,7 @@ import {
   UserIdentity,
 } from '@wings-online/common';
 import { BaseReadRepository } from '@wings-online/common/repositories/base.read-repository';
+import { ParameterValue } from '@wings-online/parameter/interfaces';
 import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 import { ParameterService } from '@wings-online/parameter/parameter.service';
 
@@ -559,6 +560,10 @@ export class TypeOrmOrderReadRepository
     };
   }
 
+  async returnReason(): Promise<ParameterValue[]> {
+    return await this.parameterService.getOrThrow(ParameterKeys.RETURN_REASON);
+  }
+
   async listOrderReturn(
     identity: UserIdentity,
     filter: {
@@ -584,8 +589,6 @@ export class TypeOrmOrderReadRepository
         docNo: filter.docNo,
       });
     }
-
-    console.log('external id ' + identity.externalId);
 
     const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
 
@@ -629,22 +632,18 @@ export class TypeOrmOrderReadRepository
         .where('detail.m_order_header_id IN (:...headerIds)', { headerIds })
         .getMany();
 
-      console.log('raw details');
-
       // Map details and inject doc_type from matching header
       const details = rawDetails.map((detail) => {
         const matchingHeader = headers.find(
           (h) => h.id === detail.orderHeaderId,
         );
+
         return {
           ...detail,
-          // orderType: matchingHeader?.documentType ?? 'ZS22', // add doc_type
-          orderType: 'ZS21', // add doc_type
+          orderType: matchingHeader?.documentType, // add doc_type
         };
       });
 
-      console.log(headers);
-      console.log(details);
       data.push({
         header: newestHeader,
         details,
@@ -712,18 +711,69 @@ export class TypeOrmOrderReadRepository
       countQuery.getCount(),
     ]);
 
-    const data: any[] = [];
+    const groupedByDocNumber: Record<string, typeof entitiesHeader> = {};
+
     for (const header of entitiesHeader) {
-      const details = await this.dataSource
+      const docNumber = header.documentNumber;
+      if (!groupedByDocNumber[docNumber]) {
+        groupedByDocNumber[docNumber] = [];
+      }
+      groupedByDocNumber[docNumber].push(header);
+    }
+
+    const data: any[] = [];
+
+    for (const docNumber in groupedByDocNumber) {
+      const headers = groupedByDocNumber[docNumber];
+
+      const newestHeader =
+        headers.reduce<TypeOrmOrderHeaderHistoryEntity | null>(
+          (latest, current) => {
+            return !latest || current.createdAt > latest.createdAt
+              ? current
+              : latest;
+          },
+          null,
+        );
+
+      if (!newestHeader) continue;
+
+      const headerIds = headers.map((h) => h.id);
+
+      const rawDetails = await this.dataSource
         .createQueryBuilder(TypeOrmOrderItemHistoryEntity, 'detail')
-        .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds })
         .getMany();
 
+      // Map details and inject doc_type from matching header
+      const details = rawDetails.map((detail) => {
+        const matchingHeader = headers.find(
+          (h) => h.id === detail.orderHeaderId,
+        );
+
+        return {
+          ...detail,
+          orderType: matchingHeader?.documentType, // add doc_type
+        };
+      });
+
       data.push({
-        header,
+        header: newestHeader,
         details,
       });
     }
+
+    // for (const header of entitiesHeader) {
+    //   const details = await this.dataSource
+    //     .createQueryBuilder(TypeOrmOrderItemHistoryEntity, 'detail')
+    //     .where('detail.m_order_header_id = :headerId', { headerId: header.id })
+    //     .getMany();
+
+    //   data.push({
+    //     header,
+    //     details,
+    //   });
+    // }
 
     return {
       data: {

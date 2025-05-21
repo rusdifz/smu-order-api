@@ -33,8 +33,8 @@ export class ListOrdersReturnTkgHandler
   async execute(
     query: ListOrdersReturnTkgQuery,
   ): Promise<ListOrdersReturnTkgResult> {
-    this.logger.trace(`BEGIN`);
-    this.logger.info({ query });
+    // this.logger.trace(`BEGIN`);
+    // this.logger.info({ query });
 
     let queryTime: number | undefined;
     queryTime = performance.now();
@@ -53,15 +53,17 @@ export class ListOrdersReturnTkgHandler
       throw createBadRequestException(
         'something-wrong-happened-with-sfa-service',
       );
-    queryTime = performance.now() - queryTime;
-    this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
+
+    // queryTime = performance.now() - queryTime;
+    // this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
 
     const materialId = orderSFA.data.listData.flatMap((ent) => {
       return ent.details.map((item) => item.materialId);
     });
 
     const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
-    const [materialForSFA, orderWO, orderWOHist] = await Promise.all([
+    const [reasons, materialForSFA, orderWO, orderWOHist] = await Promise.all([
+      this.repository.returnReason(),
       this.repository.listMaterialForSFA(userType, materialId),
       this.repository.listOrderReturn(
         identity,
@@ -85,11 +87,12 @@ export class ListOrdersReturnTkgHandler
       ),
     ]);
 
-    queryTime = performance.now() - queryTime;
-    this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
+    // queryTime = performance.now() - queryTime;
+    // this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
 
-    this.logger.trace(`END`);
+    // this.logger.trace(`END`);
     return new ListOrdersReturnTkgResult(
+      reasons,
       materialForSFA,
       page,
       limit,

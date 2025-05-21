@@ -4,4 +4,5 @@ export const ParameterKeys = {
   CUST_GROUP_RETAIL: 'cust_group_retail',
   TKG_ORDER_TYPE: 'tkg_order_type_sfa',
   RETURN_ORDER_TYPE: 'retur_order_type_sfa',
+  RETURN_REASON: 'return_reason',
 };

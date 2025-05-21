@@ -30,10 +30,14 @@ export class ParameterService implements IParameterService {
       let parameter: Parameter;
       if (newParameters.has(entity.key)) {
         parameter = newParameters.get(entity.key)!;
-        parameter.addValue({ value: entity.value, sequence: entity.sequence });
+        parameter.addValue({
+          value: entity.value,
+          sequence: entity.sequence,
+          desc: entity.desc,
+        });
       } else {
         parameter = new Parameter(entity.key, [
-          { value: entity.value, sequence: entity.sequence },
+          { value: entity.value, sequence: entity.sequence, desc: entity.desc },
         ]);
       }
       newParameters.set(entity.key, parameter);
