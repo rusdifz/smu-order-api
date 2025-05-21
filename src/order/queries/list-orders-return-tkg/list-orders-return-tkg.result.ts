@@ -60,19 +60,16 @@ export class ListOrdersReturnTkgResult {
             maxDiscount: null,
             coinVoucher: null,
             flagRecommendation: '',
+            returnReason: reasons.find((r) => r.value === detail.return)?.desc,
           },
         };
       });
-
-      const matchingReason = reasons.find(
-        (r) => r.value === item.header.reason,
-      );
 
       const data = {
         status: item.history[0].soStatus,
         docNumber: item.header.docNo,
         date: Math.floor(new Date(item.header.docDate).getTime() / 1000),
-        reason: matchingReason?.desc,
+        reason: reasons.find((r) => r.value === item.header.reason)?.desc,
         order_tkg_in: enrichedDetails.filter(
           (item) => item.orderType === 'ZS21',
         ),
@@ -86,9 +83,6 @@ export class ListOrdersReturnTkgResult {
     }
 
     for (const item of propsOrderWO.data.listData) {
-      const matchingReason = reasons.find(
-        (r) => r.value === item.details[0].returnReason,
-      );
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] == item?.header?.status,
@@ -96,11 +90,26 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: matchingReason?.desc,
-        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZT01'),
-        order_tkg_out: item.details?.filter(
-          (item) => item.orderType === 'ZT02',
-        ),
+        reason: reasons.find((r) => r.value === item.details[0].returnReason)
+          ?.desc,
+        order_tkg_in: item.details
+          ?.filter((item) => item.orderType === 'ZT01')
+          .map((item) => {
+            return {
+              ...item,
+              returnReason: reasons.find((r) => r.value === item.returnReason)
+                ?.desc,
+            };
+          }),
+        order_tkg_out: item.details
+          ?.filter((item) => item.orderType === 'ZT02')
+          .map((item) => {
+            return {
+              ...item,
+              returnReason: reasons.find((r) => r.value === item.returnReason)
+                ?.desc,
+            };
+          }),
       };
 
       if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
@@ -108,9 +117,6 @@ export class ListOrdersReturnTkgResult {
     }
 
     for (const item of propsOrderWOHist.data.listData) {
-      const matchingReason = reasons.find(
-        (r) => r.value === item.details[0].returnReason,
-      );
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] === item?.header?.status,
@@ -118,11 +124,26 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: matchingReason?.desc,
-        order_tkg_in: item.details?.filter((item) => item.orderType === 'ZT01'),
-        order_tkg_out: item.details?.filter(
-          (item) => item.orderType === 'ZT02',
-        ),
+        reason: reasons.find((r) => r.value === item.details[0].returnReason)
+          ?.desc,
+        order_tkg_in: item.details
+          ?.filter((item) => item.orderType === 'ZT01')
+          .map((item) => {
+            return {
+              ...item,
+              returnReason: reasons.find((r) => r.value === item.returnReason)
+                ?.desc,
+            };
+          }),
+        order_tkg_out: item.details
+          ?.filter((item) => item.orderType === 'ZT02')
+          .map((item) => {
+            return {
+              ...item,
+              returnReason: reasons.find((r) => r.value === item.returnReason)
+                ?.desc,
+            };
+          }),
       };
 
       if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
