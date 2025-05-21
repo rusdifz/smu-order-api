@@ -663,9 +663,7 @@ export class TypeOrmOrderReadRepository
     // }
 
     return {
-      data: {
-        listData: data,
-      },
+      data,
       metadata: {
         page: page,
         limit: limit,
@@ -776,9 +774,7 @@ export class TypeOrmOrderReadRepository
     // }
 
     return {
-      data: {
-        listData: data,
-      },
+      data,
       metadata: {
         page: page,
         limit: limit,

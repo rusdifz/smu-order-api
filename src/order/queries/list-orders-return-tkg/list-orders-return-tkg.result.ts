@@ -82,7 +82,7 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
 
-    for (const item of propsOrderWO.data.listData) {
+    for (const item of propsOrderWO.data) {
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] == item?.header?.status,
@@ -116,7 +116,7 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
 
-    for (const item of propsOrderWOHist.data.listData) {
+    for (const item of propsOrderWOHist.data) {
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] === item?.header?.status,
