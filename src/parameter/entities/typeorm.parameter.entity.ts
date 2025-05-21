@@ -13,4 +13,7 @@ export class TypeOrmParameterEntity {
 
   @Column({ name: 'seq_no' })
   readonly sequence: number;
+
+  @Column({ name: 'description' })
+  readonly desc: string;
 }
