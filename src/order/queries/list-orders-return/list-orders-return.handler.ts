@@ -5,8 +5,14 @@ import {
   PinoLogger,
 } from '@wings-corporation/nest-pino-logger';
 import { createBadRequestException } from '@wings-online/common';
-import { ISfaService } from '@wings-online/order/interfaces';
-import { SFA_SERVICE } from '@wings-online/order/order.constants';
+import {
+  IOrderReadRepository,
+  ISfaService,
+} from '@wings-online/order/interfaces';
+import {
+  ORDER_READ_REPOSITORY,
+  SFA_SERVICE,
+} from '@wings-online/order/order.constants';
 
 import { ListOrdersReturnQuery } from './list-orders-return.query';
 import { ListOrdersReturnResult } from './list-orders-return.result';
@@ -20,6 +26,8 @@ export class ListOrdersReturnHandler
     readonly logger: PinoLogger,
     @Inject(SFA_SERVICE)
     private readonly SfaService: ISfaService,
+    @Inject(ORDER_READ_REPOSITORY)
+    readonly repository: IOrderReadRepository,
   ) {}
 
   async execute(query: ListOrdersReturnQuery): Promise<ListOrdersReturnResult> {
@@ -39,6 +47,18 @@ export class ListOrdersReturnHandler
       limit,
       page,
     });
+
+    const materialId = order.data.listData.flatMap((ent) => {
+      return ent.details.map((item) => item.materialId);
+    });
+
+    const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
+
+    const materialForSFA = await this.repository.listMaterialForSFA(
+      userType,
+      materialId,
+    );
+
     if (!order)
       throw createBadRequestException(
         'something-wrong-happened-with-sfa-service',
@@ -48,6 +68,6 @@ export class ListOrdersReturnHandler
     // this.logger.info({ queryTime }, 'list-order-return-query');
 
     // this.logger.trace(`END`);
-    return new ListOrdersReturnResult(order);
+    return new ListOrdersReturnResult(materialForSFA, order);
   }
 }

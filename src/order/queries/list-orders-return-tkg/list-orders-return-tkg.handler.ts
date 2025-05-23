@@ -62,37 +62,39 @@ export class ListOrdersReturnTkgHandler
     });
 
     const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
-    const [reasons, materialForSFA, orderWO, orderWOHist] = await Promise.all([
-      this.repository.returnReason(),
-      this.repository.listMaterialForSFA(userType, materialId),
-      this.repository.listOrderReturn(
-        identity,
-        {
-          docNo,
-        },
-        {
-          limit: limit,
-          page,
-        },
-      ),
-      this.repository.listOrderHistoryReturn(
-        identity,
-        {
-          docNo,
-        },
-        {
-          limit: limit,
-          page,
-        },
-      ),
-    ]);
+
+    const [parameters, materialForSFA, orderWO, orderWOHist] =
+      await Promise.all([
+        this.repository.parameters(),
+        this.repository.listMaterialForSFA(userType, materialId),
+        this.repository.listOrderReturn(
+          identity,
+          {
+            docNo,
+          },
+          {
+            limit: limit,
+            page,
+          },
+        ),
+        this.repository.listOrderHistoryReturn(
+          identity,
+          {
+            docNo,
+          },
+          {
+            limit: limit,
+            page,
+          },
+        ),
+      ]);
 
     // queryTime = performance.now() - queryTime;
     // this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
 
     // this.logger.trace(`END`);
     return new ListOrdersReturnTkgResult(
-      reasons,
+      parameters,
       materialForSFA,
       page,
       limit,

@@ -560,8 +560,12 @@ export class TypeOrmOrderReadRepository
     };
   }
 
-  async returnReason(): Promise<ParameterValue[]> {
-    return await this.parameterService.getOrThrow(ParameterKeys.RETURN_REASON);
+  async parameters(): Promise<ParameterValue[]> {
+    const [orderTypeSFA, reasons] = await Promise.all([
+      this.parameterService.getOne(ParameterKeys.TKG_ORDER_TYPE),
+      this.parameterService.getOrThrow(ParameterKeys.RETURN_REASON),
+    ]);
+    return [...(orderTypeSFA ? [orderTypeSFA] : []), ...reasons];
   }
 
   async listOrderReturn(
