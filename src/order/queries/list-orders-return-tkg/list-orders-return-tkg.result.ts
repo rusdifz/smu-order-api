@@ -1,9 +1,10 @@
 import { OrderStatus } from '@wings-online/order/order.constants';
 import { ParameterValue } from '@wings-online/parameter/interfaces';
+import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
 
 export class ListOrdersReturnTkgResult {
   constructor(
-    reasons: ParameterValue[],
+    parameters: ParameterValue[],
     materialForSFA: any,
     page: any,
     limit: any,
@@ -61,7 +62,8 @@ export class ListOrdersReturnTkgResult {
             maxDiscount: null,
             coinVoucher: null,
             flagRecommendation: '',
-            returnReason: reasons.find((r) => r.value === detail.return)?.desc,
+            returnReason: parameters.find((r) => r.value === detail.return)
+              ?.desc,
           },
         };
       });
@@ -70,12 +72,20 @@ export class ListOrdersReturnTkgResult {
         status: item.history[0].soStatus,
         docNumber: item.header.docNo,
         date: Math.floor(new Date(item.header.docDate).getTime() / 1000),
-        reason: reasons.find((r) => r.value === item.header.reason)?.desc,
+        reason: parameters.find((r) => r.value === item.header.reason)?.desc,
         order_tkg_in: enrichedDetails.filter(
-          (item) => item.orderType === 'ZS21',
+          (item) =>
+            item.orderType ===
+            parameters
+              .find((r) => r.key == ParameterKeys.TKG_ORDER_TYPE)
+              ?.value.split(',')[0],
         ),
         order_tkg_out: enrichedDetails.filter(
-          (item) => item.orderType === 'ZS22',
+          (item) =>
+            item.orderType ===
+            parameters
+              .find((r) => r.key == ParameterKeys.TKG_ORDER_TYPE)
+              ?.value.split(',')[1],
         ),
       };
 
@@ -91,15 +101,16 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: reasons.find((r) => r.value === item.details[0].returnReason)
+        reason: parameters.find((r) => r.value === item.details[0].returnReason)
           ?.desc,
         order_tkg_in: item.details
           ?.filter((item) => item.orderType === 'ZT01')
           .map((item) => {
             return {
               ...item,
-              returnReason: reasons.find((r) => r.value === item.returnReason)
-                ?.desc,
+              returnReason: parameters.find(
+                (r) => r.value === item.returnReason,
+              )?.desc,
             };
           }),
         order_tkg_out: item.details
@@ -107,8 +118,9 @@ export class ListOrdersReturnTkgResult {
           .map((item) => {
             return {
               ...item,
-              returnReason: reasons.find((r) => r.value === item.returnReason)
-                ?.desc,
+              returnReason: parameters.find(
+                (r) => r.value === item.returnReason,
+              )?.desc,
             };
           }),
       };
@@ -125,15 +137,16 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: reasons.find((r) => r.value === item.details[0].returnReason)
+        reason: parameters.find((r) => r.value === item.details[0].returnReason)
           ?.desc,
         order_tkg_in: item.details
           ?.filter((item) => item.orderType === 'ZT01')
           .map((item) => {
             return {
               ...item,
-              returnReason: reasons.find((r) => r.value === item.returnReason)
-                ?.desc,
+              returnReason: parameters.find(
+                (r) => r.value === item.returnReason,
+              )?.desc,
             };
           }),
         order_tkg_out: item.details
@@ -141,8 +154,9 @@ export class ListOrdersReturnTkgResult {
           .map((item) => {
             return {
               ...item,
-              returnReason: reasons.find((r) => r.value === item.returnReason)
-                ?.desc,
+              returnReason: parameters.find(
+                (r) => r.value === item.returnReason,
+              )?.desc,
             };
           }),
       };

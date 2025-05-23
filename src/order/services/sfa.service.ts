@@ -29,18 +29,18 @@ export class SfaService implements ISfaService {
    * @param params
    */
   async listReturnTkg(params: {
-    custId: string,
-    docNo: string,
-    limit: number,
-    page: number,
+    custId: string;
+    docNo: string;
+    limit: number;
+    page: number;
   }): Promise<any> {
     const methodName = 'listReturnTkg';
-    this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
+    // this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
 
     const parameterOrderType = await this.parameterService.getOne(
       ParameterKeys.TKG_ORDER_TYPE,
     );
-    if(!parameterOrderType){
+    if (!parameterOrderType) {
       throw Error(`Not maintain Parameter: ${ParameterKeys.TKG_ORDER_TYPE}`);
     }
 
@@ -56,18 +56,16 @@ export class SfaService implements ISfaService {
 
     if (params.limit && params.limit > 0) {
       query += query ? `&limit=${params.limit}` : `limit=${params.limit}`;
-    }
-    else{
+    } else {
       query += query ? `&limit=10` : `limit=10`;
     }
 
     if (params.page && params.page > 0) {
       query += query ? `&page=${params.page}` : `page=${params.page}`;
-    }
-    else{
+    } else {
       query += query ? `&page=1` : `page=1`;
     }
-    
+
     const url = `${this.sfaApiUrl}/returntkg/paginate?${query}`;
 
     const request = this.httpService
@@ -88,7 +86,7 @@ export class SfaService implements ISfaService {
           throw error;
         }),
       );
-      
+
     const { status, data } = await firstValueFrom(request);
     if (status !== 200) {
       this.logger.error({
@@ -102,7 +100,7 @@ export class SfaService implements ISfaService {
       throw Error(`SFA API Error: ${data.error}`);
     }
 
-    this.logger.trace({ methodName }, 'END');
+    // this.logger.trace({ methodName }, 'END');
     return data;
   }
   /**
@@ -110,18 +108,18 @@ export class SfaService implements ISfaService {
    * @param params
    */
   async listReturnOrder(params: {
-    custId: string,
-    docNo: string,
-    limit: number,
-    page: number,
+    custId: string;
+    docNo: string;
+    limit: number;
+    page: number;
   }): Promise<any> {
     const methodName = 'listReturnOrder';
-    this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
+    // this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
 
     const parameterOrderType = await this.parameterService.getOne(
       ParameterKeys.RETURN_ORDER_TYPE,
     );
-    if(!parameterOrderType){
+    if (!parameterOrderType) {
       throw Error(`Not maintain Parameter: ${ParameterKeys.RETURN_ORDER_TYPE}`);
     }
 
@@ -137,18 +135,16 @@ export class SfaService implements ISfaService {
 
     if (params.limit && params.limit > 0) {
       query += query ? `&limit=${params.limit}` : `limit=${params.limit}`;
-    }
-    else{
+    } else {
       query += query ? `&limit=10` : `limit=10`;
     }
 
     if (params.page && params.page > 0) {
       query += query ? `&page=${params.page}` : `page=${params.page}`;
-    }
-    else{
+    } else {
       query += query ? `&page=1` : `page=1`;
     }
-    
+
     const url = `${this.sfaApiUrl}/returntkg/paginate?${query}`;
 
     const request = this.httpService
@@ -169,8 +165,12 @@ export class SfaService implements ISfaService {
           throw error;
         }),
       );
-      
+
     const { status, data } = await firstValueFrom(request);
+    const reasons = await this.parameterService.getOrThrow(
+      ParameterKeys.RETURN_REASON,
+    );
+
     if (status !== 200) {
       this.logger.error({
         methodName,
@@ -183,8 +183,7 @@ export class SfaService implements ISfaService {
       throw Error(`SFA API Error: ${data.error}`);
     }
 
-    this.logger.trace({ methodName }, 'END');
-    return data;
+    // this.logger.trace({ methodName }, 'END');
+    return { parameterOrderType, reasons, ...data };
   }
-
 }

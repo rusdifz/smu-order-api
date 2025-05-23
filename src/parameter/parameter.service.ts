@@ -31,13 +31,19 @@ export class ParameterService implements IParameterService {
       if (newParameters.has(entity.key)) {
         parameter = newParameters.get(entity.key)!;
         parameter.addValue({
+          key: entity.key,
           value: entity.value,
           sequence: entity.sequence,
           desc: entity.desc,
         });
       } else {
         parameter = new Parameter(entity.key, [
-          { value: entity.value, sequence: entity.sequence, desc: entity.desc },
+          {
+            key: entity.key,
+            value: entity.value,
+            sequence: entity.sequence,
+            desc: entity.desc,
+          },
         ]);
       }
       newParameters.set(entity.key, parameter);
