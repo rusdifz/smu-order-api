@@ -8,6 +8,10 @@ import {
   GetOrderStatusHistoryHandler,
 } from './get-order-status-history/';
 import {
+  ListMissingGoodsController,
+  ListMissingGoodsHandler,
+} from './list-missing-goods';
+import {
   ListOrderHistoryController,
   ListOrderHistoryHandler,
 } from './list-order-history';
@@ -33,7 +37,8 @@ export const QueryControllers = [
   GetOrderStatusHistoryController,
   SuggestSearchOrderController,
   ListOrdersReturnTkgController,
-  ListOrdersReturnController
+  ListOrdersReturnController,
+  ListMissingGoodsController,
 ];
 
 export const QueryHandlers = [
@@ -45,4 +50,5 @@ export const QueryHandlers = [
   SuggestSearchOrderHandler,
   ListOrdersReturnTkgHandler,
   ListOrdersReturnHandler,
+  ListMissingGoodsHandler,
 ];
