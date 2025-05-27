@@ -9,17 +9,28 @@ export class ListMissingGoodsResult {
       data: props.data.listData.map((item) => {
         return {
           ticket: item.header.alertNo,
+          status: item.header.alerts.find(
+            (as) => as.alertNo === item.header.alertNo,
+          )?.alertStatus,
           date: Math.floor(new Date(item.header.createdDate).getTime() / 1000),
           lastUpdateData: Math.max(
             0,
             Math.floor(new Date(item.header.changedDate).getTime() / 1000),
           ),
-          problem: item.header.detailProblem,
-          solution: item.header.solutions[0].reasonDesc,
+          problem: item.header.alerts.find(
+            (as) => as.alertNo === item.header.alertNo,
+          )?.reasonDesc,
+          solution: item.header.solutions.find(
+            (as) => as.alertNo === item.header.alertNo,
+          )?.reasonDesc,
           item: {
-            productDesc: item.details[0].produkDesc,
-            qty: item.details[0].jumlahSelisih,
-            uom: item.details[0].uom,
+            productDesc: item.details.find(
+              (as) => as.alertNo === item.header.alertNo,
+            )?.produkDesc,
+            qty: item.details.find((as) => as.alertNo === item.header.alertNo)
+              ?.jumlahSelisih,
+            uom: item.details.find((as) => as.alertNo === item.header.alertNo)
+              ?.uom,
           },
         };
       }),
