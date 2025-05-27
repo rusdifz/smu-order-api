@@ -68,6 +68,7 @@ export class ListOrdersReturnHandler
     // this.logger.info({ queryTime }, 'list-order-return-query');
 
     // this.logger.trace(`END`);
+    // return order;
     return new ListOrdersReturnResult(materialForSFA, order);
   }
 }

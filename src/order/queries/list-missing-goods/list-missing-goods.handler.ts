@@ -48,17 +48,6 @@ export class ListMissingGoodsHandler
       page,
     });
 
-    const materialId = order.data.listData.flatMap((ent) => {
-      return ent.details.map((item) => item.materialId);
-    });
-
-    const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
-
-    const materialForSFA = await this.repository.listMaterialForSFA(
-      userType,
-      materialId,
-    );
-
     if (!order)
       throw createBadRequestException(
         'something-wrong-happened-with-sfa-service',
