@@ -17,21 +17,21 @@ export class ListMissingGoodsResult {
             0,
             Math.floor(new Date(item.header.changedDate).getTime() / 1000),
           ),
-          problem: item.header.alerts.find(
-            (as) => as.alertNo === item.header.alertNo,
-          )?.reasonDesc,
-          solution: item.header.solutions.find(
-            (as) => as.alertNo === item.header.alertNo,
-          )?.reasonDesc,
-          item: {
-            productDesc: item.details.find(
-              (as) => as.alertNo === item.header.alertNo,
-            )?.produkDesc,
-            qty: item.details.find((as) => as.alertNo === item.header.alertNo)
-              ?.jumlahSelisih,
-            uom: item.details.find((as) => as.alertNo === item.header.alertNo)
-              ?.uom,
-          },
+          itemsMissing: item.header.alerts.map((alert) => {
+            return {
+              ticket: alert.alertNo,
+              productDesc: item.details.find(
+                (as) => as.alertNo === alert.alertNo,
+              )?.produkDesc,
+              qty: item.details.find((as) => as.alertNo === alert.alertNo)
+                ?.jumlahSelisih,
+              uom: item.details.find((as) => as.alertNo === alert.alertNo)?.uom,
+              problem: alert.reasonDesc,
+              solution: item.header.solutions.find(
+                (as) => as.alertNo === item.header.alertNo,
+              )?.reasonDesc,
+            };
+          }),
         };
       }),
     };
