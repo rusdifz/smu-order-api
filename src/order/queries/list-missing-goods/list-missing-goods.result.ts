@@ -26,10 +26,10 @@ export class ListMissingGoodsResult {
               qty: item.details.find((as) => as.alertNo === alert.alertNo)
                 ?.jumlahSelisih,
               uom: item.details.find((as) => as.alertNo === alert.alertNo)?.uom,
-              problem: alert.reasonDesc,
+              problem: item.header.detailProblem,
               solution: item.header.solutions.find(
                 (as) => as.alertNo === item.header.alertNo,
-              )?.reasonDesc,
+              ),
             };
           }),
         };
