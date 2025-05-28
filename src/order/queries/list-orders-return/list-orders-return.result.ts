@@ -9,8 +9,6 @@ export class ListOrdersReturnResult {
         page: props.data.page,
         limit: props.data.limit,
         total: props.data.total,
-        // orderBy: props.data.orderBy,
-        // order: props.data.order,
       },
       data: props.data.listData.map((item) => {
         const enrichedDetails = item.details.map((detail) => {
@@ -42,8 +40,9 @@ export class ListOrdersReturnResult {
               materialTitleName: matchedItem.name,
               materialImage: matchedItem.image_url,
               pricePcs: detail.price_pcs,
-              returnReason: props.reasons.find((r) => r.value === detail.return)
-                ?.desc,
+              returnReason: props.reasons.find(
+                (r) => r.value === detail.reasonId,
+              )?.desc,
             },
           };
         });
