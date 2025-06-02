@@ -17,8 +17,26 @@ export class ListOrdersReturnTkgResult {
       materialForSFA.items.map((item) => [item.external_id, item]),
     );
 
-    for (const item of propsSFA.data.listData) {
-      const enrichedDetails = item.details.map((detail) => {
+    const groupedByDocNumber: Record<string, any> = {};
+
+    for (const data of propsSFA.data.listData) {
+      const docNumber = data.header.docNo;
+      if (!groupedByDocNumber[docNumber]) {
+        groupedByDocNumber[docNumber] = [];
+      }
+      for (const item of data.details) {
+        groupedByDocNumber[docNumber].push(item);
+      }
+    }
+
+    for (const [docNumber, item] of Object.entries(groupedByDocNumber)) {
+      const header = propsSFA.data.listData.find(
+        (h) => h.header.docNo == docNumber,
+      ).header;
+      const history = propsSFA.data.listData.find(
+        (h) => h.header.docNo == docNumber,
+      ).history[0];
+      const enrichedDetails = item.map((detail) => {
         const matchedItem = itemMap.get(detail.materialId) as Record<
           string,
           any
@@ -27,7 +45,7 @@ export class ListOrdersReturnTkgResult {
         return {
           ...{
             orderType: detail.orderTypeId,
-            createdAt: item.header.docDate,
+            createdAt: header.docDate,
             discount: detail.discPrice,
             documentNumber: detail.docNo,
             itemName: detail.name,
@@ -47,17 +65,17 @@ export class ListOrdersReturnTkgResult {
             materialTitleName: matchedItem.name,
             materialImage: matchedItem.image_url,
             pricePcs: detail.price_pcs,
-            returnReason: parameters.find((r) => r.value === detail.return)
+            returnReason: parameters.find((r) => r.value === detail.reasonId)
               ?.desc,
           },
         };
       });
 
       const data = {
-        status: item.history[0].soStatus,
-        docNumber: item.header.docNo,
-        date: Math.floor(new Date(item.header.docDate).getTime() / 1000),
-        reason: parameters.find((r) => r.value === item.header.reason)?.desc,
+        status: history.soStatus,
+        docNumber: header.docNo,
+        date: Math.floor(new Date(header.docDate).getTime() / 1000),
+        reason: parameters.find((r) => r.value === header.reason)?.desc,
         order_tkg_in: enrichedDetails.filter(
           (item) =>
             item.orderType ===
@@ -110,7 +128,7 @@ export class ListOrdersReturnTkgResult {
           }),
       };
 
-      if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
+      if (data.order_tkg_in.length > 0 && data.order_tkg_out.length > 0)
         listData.push(data);
     }
 
@@ -146,7 +164,7 @@ export class ListOrdersReturnTkgResult {
           }),
       };
 
-      if (data.order_tkg_in.length > 0 || data.order_tkg_out.length > 0)
+      if (data.order_tkg_in.length > 0 && data.order_tkg_out.length > 0)
         listData.push(data);
     }
 
