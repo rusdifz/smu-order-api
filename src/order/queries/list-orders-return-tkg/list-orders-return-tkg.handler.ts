@@ -93,6 +93,7 @@ export class ListOrdersReturnTkgHandler
     // this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-wo');
 
     // this.logger.trace(`END`);
+    // return orderSFA;
     return new ListOrdersReturnTkgResult(
       parameters,
       materialForSFA,
