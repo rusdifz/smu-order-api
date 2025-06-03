@@ -72,7 +72,6 @@ export class ListOrdersReturnTkgResult {
       });
 
       const data = {
-        status: history.soStatus,
         docNumber: header.docNo,
         date: Math.floor(new Date(header.docDate).getTime() / 1000),
         reason: parameters.find((r) => r.value === header.reason)?.desc,
