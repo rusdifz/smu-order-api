@@ -591,7 +591,6 @@ export class TypeOrmOrderReadRepository
         customerId: identity.externalId,
       })
       .addOrderBy('order.documentDate', 'DESC')
-      .addOrderBy('order.id', 'DESC')
       .andWhere('order.deletedAt IS NULL')
       .andWhere('order.status = :status', { status: OrderStatus.CONFIRMED });
 
@@ -699,7 +698,6 @@ export class TypeOrmOrderReadRepository
         customerId: identity.externalId,
       })
       .addOrderBy('order.documentDate', 'DESC')
-      .addOrderBy('order.id', 'DESC')
       .andWhere('order.deletedAt IS NULL')
       .andWhere('order.status NOT IN (:...statuses)', {
         statuses: [OrderStatus.CONFIRMED, OrderStatus.NOT_CONFIRMED],
