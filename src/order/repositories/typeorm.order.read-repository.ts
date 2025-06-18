@@ -561,11 +561,18 @@ export class TypeOrmOrderReadRepository
   }
 
   async parameters(): Promise<ParameterValue[]> {
-    const [orderTypeSFA, reasons] = await Promise.all([
+    const [orderTypeSFA, woIn, woOut, reasons] = await Promise.all([
       this.parameterService.getOne(ParameterKeys.TKG_ORDER_TYPE),
+      this.parameterService.getOne(ParameterKeys.TKG_WO_IN_ORDER_TYPE),
+      this.parameterService.getOne(ParameterKeys.TKG_WO_OUT_ORDER_TYPE),
       this.parameterService.getOrThrow(ParameterKeys.RETURN_REASON),
     ]);
-    return [...(orderTypeSFA ? [orderTypeSFA] : []), ...reasons];
+    return [
+      ...(orderTypeSFA ? [orderTypeSFA] : []),
+      ...(woIn ? [woIn] : []),
+      ...(woOut ? [woOut] : []),
+      ...reasons,
+    ];
   }
 
   async listOrderReturn(
