@@ -51,6 +51,7 @@ export interface IOrderReadRepository {
     identity: UserIdentity,
     filter?: {
       keyword?: string;
+      excludeDocTypes?: string[];
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;
@@ -61,6 +62,7 @@ export interface IOrderReadRepository {
       state?: OrderState;
       // externalIds?: string[];
       keyword?: string;
+      excludeDocTypes?: string[];
     },
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>>;

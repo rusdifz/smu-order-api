@@ -30,6 +30,9 @@ export class TypeOrmOrderEntity {
   @Column({ name: 'doc_number' })
   readonly documentNumber: string;
 
+  @Column({ name: 'doc_type' })
+  readonly docType: string;
+
   @Column({
     name: 'transaction_date',
   })

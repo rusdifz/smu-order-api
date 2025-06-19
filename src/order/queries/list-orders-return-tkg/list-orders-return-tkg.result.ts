@@ -33,9 +33,6 @@ export class ListOrdersReturnTkgResult {
       const header = propsSFA.data.listData.find(
         (h) => h.header.docNo == docNumber,
       ).header;
-      const history = propsSFA.data.listData.find(
-        (h) => h.header.docNo == docNumber,
-      ).history[0];
       const enrichedDetails = item.map((detail) => {
         const matchedItem = itemMap.get(detail.materialId) as Record<
           string,
@@ -53,20 +50,19 @@ export class ListOrdersReturnTkgResult {
             newMaterialId: matchedItem.id,
             price: detail.netPrice,
             priceValue: detail.netPrice,
-            qtyBase: detail.qtyPack,
-            qtyPack: detail.qtyCase,
-            baseUom: detail.baseUnit,
-            packUom: detail.slsUnit,
             sequence: detail.item,
-            totalBought: detail.qtyCase,
-            typeBought: detail.slsUnit,
+            qtyPack: detail.qtyCase,
+            packUom: detail.slsUnit,
+            qtyBase: detail.qtyPack,
+            baseUom: detail.baseUnit,
+            totalBought: mapTotalBought(detail, matchedItem),
+            typeBought: matchedItem.base_uom,
             orderHeaderId: detail.orderHeaderId,
             mMaterialId: detail.materialId,
             materialTitleName: matchedItem.name,
             materialImage: matchedItem.image_url,
             pricePcs: detail.price_pcs,
-            returnReason: parameters.find((r) => r.value === detail.reasonId)
-              ?.desc,
+            returnReason: detail.reasonId,
           },
         };
       });
@@ -103,26 +99,33 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: parameters.find((r) => r.value === item.details[0].returnReason)
-          ?.desc,
+        reason: item.details[0].returnReason,
         order_tkg_in: item.details
-          ?.filter((item) => item.orderType === 'ZT01')
+          ?.filter(
+            (item) =>
+              item.orderType ===
+              parameters.find(
+                (r) => r.key == ParameterKeys.TKG_WO_IN_ORDER_TYPE,
+              )?.value,
+          )
           .map((item) => {
             return {
               ...item,
-              returnReason: parameters.find(
-                (r) => r.value === item.returnReason,
-              )?.desc,
+              returnReason: item.returnReason,
             };
           }),
         order_tkg_out: item.details
-          ?.filter((item) => item.orderType === 'ZT02')
+          ?.filter(
+            (item) =>
+              item.orderType ===
+              parameters.find(
+                (r) => r.key == ParameterKeys.TKG_WO_OUT_ORDER_TYPE,
+              )?.value,
+          )
           .map((item) => {
             return {
               ...item,
-              returnReason: parameters.find(
-                (r) => r.value === item.returnReason,
-              )?.desc,
+              returnReason: item.returnReason,
             };
           }),
       };
@@ -139,26 +142,33 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: parameters.find((r) => r.value === item.details[0].returnReason)
-          ?.desc,
+        reason: item.details[0].returnReason,
         order_tkg_in: item.details
-          ?.filter((item) => item.orderType === 'ZT01')
+          ?.filter(
+            (item) =>
+              item.orderType ===
+              parameters.find(
+                (r) => r.key == ParameterKeys.TKG_WO_IN_ORDER_TYPE,
+              )?.value,
+          )
           .map((item) => {
             return {
               ...item,
-              returnReason: parameters.find(
-                (r) => r.value === item.returnReason,
-              )?.desc,
+              returnReason: item.returnReason,
             };
           }),
         order_tkg_out: item.details
-          ?.filter((item) => item.orderType === 'ZT02')
+          ?.filter(
+            (item) =>
+              item.orderType ===
+              parameters.find(
+                (r) => r.key == ParameterKeys.TKG_WO_OUT_ORDER_TYPE,
+              )?.value,
+          )
           .map((item) => {
             return {
               ...item,
-              returnReason: parameters.find(
-                (r) => r.value === item.returnReason,
-              )?.desc,
+              returnReason: item.returnReason,
             };
           }),
       };
@@ -167,6 +177,7 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
 
+    listData.sort((a, b) => b.date - a.date); // sort DESC
     return {
       metadata: {
         page: page,
@@ -193,4 +204,12 @@ export class ListOrdersReturnTkgResult {
       data: listData,
     };
   }
+}
+
+function mapTotalBought(detail: any, matchedItem: any): number {
+  let totalBought = detail.qtyCase;
+  if (detail.qtyPack > 0) {
+    totalBought += detail.qtyPack * matchedItem.pack_qty;
+  }
+  return totalBought;
 }

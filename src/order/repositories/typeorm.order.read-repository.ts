@@ -60,6 +60,7 @@ export class TypeOrmOrderReadRepository
       state?: OrderState;
       // externalIds?: string[];
       keyword?: string;
+      excludeDocTypes?: string[];
     } = {
       state: 'ANY',
     },
@@ -158,6 +159,14 @@ export class TypeOrmOrderReadRepository
       );
     }
 
+    if (filter && filter.excludeDocTypes && filter.excludeDocTypes.length > 0) {
+      query.andWhere('order.docType NOT IN (:...excludeDocTypes)', {
+        excludeDocTypes: filter.excludeDocTypes,
+      })
+    }
+
+    console.log('ditto', query.getQueryAndParameters());
+
     const countQuery = query.clone();
 
     if (options?.cursor) {
@@ -211,7 +220,7 @@ export class TypeOrmOrderReadRepository
 
   async listOrderHistories(
     identity: UserIdentity,
-    filter?: { externalIds?: string[]; keyword?: string },
+    filter?: { externalIds?: string[]; keyword?: string; excludeDocTypes?: string[];},
     options?: { limit?: number; cursor?: string },
   ): Promise<Collection<ListOrderReadModel>> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
@@ -266,6 +275,12 @@ export class TypeOrmOrderReadRepository
           keyword: filter.keyword,
         },
       );
+    }
+
+    if (filter && filter.excludeDocTypes && filter.excludeDocTypes.length > 0) {
+      query.andWhere('order.docType NOT IN (:...excludeDocTypes)', {
+        excludeDocTypes: filter.excludeDocTypes,
+      })
     }
 
     const countQuery = query.clone();
@@ -561,11 +576,18 @@ export class TypeOrmOrderReadRepository
   }
 
   async parameters(): Promise<ParameterValue[]> {
-    const [orderTypeSFA, reasons] = await Promise.all([
+    const [orderTypeSFA, woIn, woOut, reasons] = await Promise.all([
       this.parameterService.getOne(ParameterKeys.TKG_ORDER_TYPE),
+      this.parameterService.getOne(ParameterKeys.TKG_WO_IN_ORDER_TYPE),
+      this.parameterService.getOne(ParameterKeys.TKG_WO_OUT_ORDER_TYPE),
       this.parameterService.getOrThrow(ParameterKeys.RETURN_REASON),
     ]);
-    return [...(orderTypeSFA ? [orderTypeSFA] : []), ...reasons];
+    return [
+      ...(orderTypeSFA ? [orderTypeSFA] : []),
+      ...(woIn ? [woIn] : []),
+      ...(woOut ? [woOut] : []),
+      ...reasons,
+    ];
   }
 
   async listOrderReturn(
