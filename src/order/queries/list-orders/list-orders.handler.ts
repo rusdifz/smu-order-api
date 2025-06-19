@@ -13,6 +13,8 @@ import {
   PRODUCT_SEARCH_READ_REPOSITORY,
 } from '@wings-online/order/order.constants';
 
+import { ParameterKeys } from '@wings-online/parameter/parameter.constants';
+import { ParameterService } from '@wings-online/parameter/parameter.service';
 import { ListOrdersQuery } from './list-orders.query';
 import { ListOrdersResult } from './list-orders.result';
 
@@ -27,6 +29,7 @@ export class ListOrdersHandler
     readonly repository: IOrderReadRepository,
     @Inject(PRODUCT_SEARCH_READ_REPOSITORY)
     private readonly searchRepository: IProductSearchReadRepository,
+    private readonly parameterService: ParameterService,
   ) {}
 
   async execute(query: ListOrdersQuery): Promise<ListOrdersResult> {
@@ -60,12 +63,26 @@ export class ListOrdersHandler
         : 'ANY';
 
     queryTime = performance.now();
+    const excludeDocTypes: string[] = [];
+    const [docTypeTkgIn, docTypeTKgOut] = await Promise.all([
+      this.parameterService.getOne(ParameterKeys.TKG_WO_IN_ORDER_TYPE),
+      this.parameterService.getOne(ParameterKeys.TKG_WO_OUT_ORDER_TYPE),
+    ]);
+
+    if(docTypeTkgIn){
+      excludeDocTypes.push(docTypeTkgIn.value);
+    }
+    if(docTypeTKgOut){
+      excludeDocTypes.push(docTypeTKgOut.value);
+    }
+
     const orders = await this.repository.listOrders(
       identity,
       {
         state,
         // externalIds,
         keyword: search,
+        excludeDocTypes
       },
       {
         limit,

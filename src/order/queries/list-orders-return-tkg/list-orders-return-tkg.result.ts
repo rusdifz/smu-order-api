@@ -177,6 +177,7 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
 
+    listData.sort((a, b) => b.date - a.date); // sort DESC
     return {
       metadata: {
         page: page,
