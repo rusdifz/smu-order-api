@@ -165,8 +165,6 @@ export class TypeOrmOrderReadRepository
       })
     }
 
-    console.log('ditto', query.getQueryAndParameters());
-
     const countQuery = query.clone();
 
     if (options?.cursor) {
