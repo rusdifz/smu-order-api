@@ -37,7 +37,7 @@ export class ListMissingGoodsHandler
     let queryTime: number | undefined;
     queryTime = performance.now();
 
-    const { docNo, limit, page, identity } = query;
+    const { docNo, limit, page, identity, sortDocDate, status } = query;
     if (!identity.externalId)
       throw createBadRequestException('custid-is-required');
 
@@ -46,6 +46,8 @@ export class ListMissingGoodsHandler
       docNo,
       limit,
       page,
+      status,
+      sortDocDate,
     });
 
     if (!order)

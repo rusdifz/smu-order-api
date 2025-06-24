@@ -33,6 +33,8 @@ export class SfaService implements ISfaService {
     docNo: string;
     limit: number;
     page: number;
+    sortDocDate?: string;
+    sortQty?: string;
   }): Promise<any> {
     const methodName = 'listReturnTkg';
     // this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
@@ -52,6 +54,15 @@ export class SfaService implements ISfaService {
 
     if (params.docNo) {
       query += query ? `&docNo=${params.docNo}` : `docNo=${params.docNo}`;
+    }
+
+
+    if (params.sortDocDate) {
+      query += query ? `&orderBy=docDate&order=${params.sortDocDate}` : `orderBy=docDate&order=${params.sortDocDate}`;
+    }
+
+    if (params.sortQty) {
+      query += query ? `&sortQty=${params.sortQty}` : `sortQty=${params.sortQty}`;
     }
 
     if (params.limit && params.limit > 0) {
@@ -113,6 +124,7 @@ export class SfaService implements ISfaService {
     docNo: string;
     limit: number;
     page: number;
+    sortDocDate?: string;
   }): Promise<any> {
     const methodName = 'listReturnOrder';
     // this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
@@ -132,6 +144,10 @@ export class SfaService implements ISfaService {
 
     if (params.docNo) {
       query += query ? `&docNo=${params.docNo}` : `docNo=${params.docNo}`;
+    }
+
+    if (params.sortDocDate) {
+      query += query ? `&orderBy=docDate&order=${params.sortDocDate}` : `orderBy=docDate&order=${params.sortDocDate}`;
     }
 
     if (params.limit && params.limit > 0) {
@@ -197,6 +213,8 @@ export class SfaService implements ISfaService {
     docNo: string;
     limit: number;
     page: number;
+    sortDocDate?: string;
+    status?: string;
   }): Promise<any> {
     const methodName = 'listMissingGoods';
     // this.logger.trace({ methodName, params: params.custId }, 'BEGIN');
@@ -208,6 +226,14 @@ export class SfaService implements ISfaService {
 
     if (params.docNo) {
       query += query ? `&docNo=${params.docNo}` : `docNo=${params.docNo}`;
+    }
+
+    if (params.sortDocDate) {
+      query += query ? `&orderBy=tanggalKejadian&order=${params.sortDocDate}` : `orderBy=tanggalKejadian&order=${params.sortDocDate}`;
+    }
+
+    if (params.status) {
+      query += query ? `&alertStatus=${params.status}` : `alertStatus=${params.status}`;
     }
 
     if (params.limit && params.limit > 0) {
@@ -223,7 +249,7 @@ export class SfaService implements ISfaService {
     }
 
     const url = `${this.sfaApiUrl}/missing-goods/paginate?${query}`;
-
+      
     const request = this.httpService
       .get<any>(url, {
         timeout: this.timeout,

@@ -1,5 +1,9 @@
 export class ListOrdersReturnResult {
-  constructor(materialForSFA: any, props: any) {
+  constructor(
+    materialForSFA: any, 
+    props: any,
+    sortDocDate?: string,
+  ) {
     const itemMap = new Map(
       materialForSFA.items.map((item) => [item.external_id, item]),
     );
@@ -50,8 +54,13 @@ export class ListOrdersReturnResult {
         ),
       };
     });
-    data.sort((a, b) => b.date - a.date); // sort DESC
 
+    if (sortDocDate === 'ASC') {
+      data.sort((a, b) => a.date - b.date); // sort ASC
+    } else {
+      data.sort((a, b) => b.date - a.date); // sort DESC
+    }
+    
     return {
       metadata: {
         page: props.data.page,

@@ -37,7 +37,7 @@ export class ListOrdersReturnHandler
     let queryTime: number | undefined;
     queryTime = performance.now();
 
-    const { docNo, limit, page, identity } = query;
+    const { docNo, limit, page, sortDocDate, identity } = query;
     if (!identity.externalId)
       throw createBadRequestException('custid-is-required');
 
@@ -46,6 +46,7 @@ export class ListOrdersReturnHandler
       docNo,
       limit,
       page,
+      sortDocDate,
     });
 
     const materialId = order.data.listData.flatMap((ent) => {
@@ -69,6 +70,10 @@ export class ListOrdersReturnHandler
 
     // this.logger.trace(`END`);
     // return order;
-    return new ListOrdersReturnResult(materialForSFA, order);
+    return new ListOrdersReturnResult(
+      materialForSFA,
+      order,
+      sortDocDate,
+    );
   }
 }

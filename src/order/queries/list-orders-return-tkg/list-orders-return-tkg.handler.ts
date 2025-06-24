@@ -11,6 +11,7 @@ import {
 } from '@wings-online/order/interfaces';
 import {
   ORDER_READ_REPOSITORY,
+  OrderStatus,
   SFA_SERVICE,
 } from '@wings-online/order/order.constants';
 
@@ -39,54 +40,111 @@ export class ListOrdersReturnTkgHandler
     let queryTime: number | undefined;
     queryTime = performance.now();
 
-    const { docNo, limit, page, identity } = query;
+    const { docNo, limit, page, sortDocDate, status, identity } = query;
     if (!identity.externalId)
       throw createBadRequestException('custid-is-required');
 
-    const orderSFA = await this.SfaService.listReturnTkg({
-      custId: identity.externalId,
-      docNo,
-      limit: limit,
-      page,
-    });
-    if (!orderSFA)
-      throw createBadRequestException(
-        'something-wrong-happened-with-sfa-service',
-      );
-
-    // queryTime = performance.now() - queryTime;
-    // this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
-
-    const materialId = orderSFA.data.listData.flatMap((ent) => {
-      return ent.details.map((item) => item.materialId);
-    });
+    // Map status string array like ['1', '2', '3A'] to OrderStatus enum values
+    const statuses = (status?.split(',') ?? [])
+      .map((s: string) => {
+        switch (s) {
+          case '0':
+            return OrderStatus.NOT_CONFIRMED;
+          case '1':
+            return OrderStatus.CONFIRMED;
+          case '1C':
+            return OrderStatus.CANCELLED_BY_CUSTOMER;
+          case '2':
+            return OrderStatus.PROCESSING;
+          case '3A':
+            return OrderStatus.PREPARING_A;
+          case '3B':
+            return OrderStatus.PREPARING_B;
+          case '3C':
+            return OrderStatus.CANCELLED_BY_SYSTEM;
+          case '4':
+            return OrderStatus.SHIPPED;
+          case '5':
+            return OrderStatus.ARRIVED;
+          case '6':
+            return OrderStatus.RECEIVED;
+          case '7':
+            return OrderStatus.RECEIVED_PARTIALLY;
+          case '8':
+            return OrderStatus.RETURNED;
+          case '9':
+            return OrderStatus.DELIVERY_FAILED;
+          default:
+            return undefined;
+        }
+      })
+      .filter((s) => s !== undefined);
+    
+    const isFinish: boolean = 
+      statuses.includes(OrderStatus.CANCELLED_BY_CUSTOMER)
+      || statuses.includes(OrderStatus.CANCELLED_BY_SYSTEM)
+      || statuses.includes(OrderStatus.RECEIVED)
+      || statuses.includes(OrderStatus.RECEIVED_PARTIALLY)
+      || statuses.includes(OrderStatus.RETURNED)
+      || statuses.includes(OrderStatus.DELIVERY_FAILED)
+      || statuses.length === 0;
+    
+    let orderSFA: any | null = null;
+    let materialId: string[] = [];
+    if (isFinish) {
+      this.logger.info({ queryTime }, 'list-order-return-tkg-query-from-sfa');
+    
+      orderSFA = await this.SfaService.listReturnTkg({
+        custId: identity.externalId,
+        docNo,
+        limit: limit,
+        page,
+        sortDocDate,
+      });
+      if (!orderSFA)
+        throw createBadRequestException(
+          'something-wrong-happened-with-sfa-service',
+        );
+        
+      materialId = orderSFA?.data?.listData.flatMap((ent) => {
+        return ent.details.map((item: { materialId: string }) => item.materialId);
+      }) ?? [];
+    }
 
     const userType = identity.externalId.includes('WS') ? 'WS' : 'SMU';
 
     const [parameters, materialForSFA, orderWO, orderWOHist] =
       await Promise.all([
-        this.repository.parameters(),
-        this.repository.listMaterialForSFA(userType, materialId),
-        this.repository.listOrderReturn(
-          identity,
-          {
-            docNo,
-          },
-          {
-            limit: limit,
-            page,
-          },
-        ),
-        this.repository.listOrderHistoryReturn(
-          identity,
-          {
-            docNo,
-          },
-          {
-            limit: limit,
-            page,
-          },
-        ),
+      this.repository.parameters(),
+      materialId.length > 0 ? this.repository.listMaterialForSFA(userType, materialId) : [],
+      this.repository.listOrderReturn(
+        identity,
+        {
+          docNo,
+          statuses,
+        },
+        {
+          docDate: sortDocDate,
+        },
+        {
+          limit: limit,
+          page,
+        },
+      ),
+      this.repository.listOrderHistoryReturn(
+        identity,
+        {
+          docNo,
+          statuses,
+        },
+        {
+          docDate: sortDocDate,
+        },
+        {
+          limit: limit,
+          page,
+        },
+      ),
       ]);
 
     // queryTime = performance.now() - queryTime;
@@ -102,6 +160,7 @@ export class ListOrdersReturnTkgHandler
       orderSFA,
       orderWO,
       orderWOHist,
+      sortDocDate,
     );
   }
 }

@@ -6,6 +6,7 @@ export class ListOrdersReturnQueryProps {
   readonly docNo?: string;
   readonly page?: number;
   readonly limit?: number;
+  readonly sortDocDate?: string;
 }
 
 export class ListOrdersReturnQuery extends ListOrdersReturnQueryProps implements IQuery {
