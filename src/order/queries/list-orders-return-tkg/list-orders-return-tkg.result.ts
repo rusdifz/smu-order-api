@@ -11,21 +11,24 @@ export class ListOrdersReturnTkgResult {
     propsSFA: any,
     propsOrderWO: any,
     propsOrderWOHist: any,
+    sortDocDate?: string,
   ) {
     const listData: any[] = [];
     const itemMap = new Map(
-      materialForSFA.items.map((item) => [item.external_id, item]),
+      materialForSFA && materialForSFA.items ? materialForSFA.items.map((item) => [item.external_id, item]) : [],
     );
 
     const groupedByDocNumber: Record<string, any> = {};
 
-    for (const data of propsSFA.data.listData) {
-      const docNumber = data.header.docNo;
-      if (!groupedByDocNumber[docNumber]) {
-        groupedByDocNumber[docNumber] = [];
-      }
-      for (const item of data.details) {
-        groupedByDocNumber[docNumber].push(item);
+    if(propsSFA && propsSFA.data && propsSFA.data.listData) {
+      for (const data of propsSFA.data.listData) {
+        const docNumber = data.header.docNo;
+        if (!groupedByDocNumber[docNumber]) {
+          groupedByDocNumber[docNumber] = [];
+        }
+        for (const item of data.details) {
+          groupedByDocNumber[docNumber].push(item);
+        }
       }
     }
 
@@ -137,7 +140,7 @@ export class ListOrdersReturnTkgResult {
 
     for (const item of propsOrderWOHist.data) {
       if(item?.details) continue;
-      
+
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] === item?.header?.status,
@@ -180,7 +183,12 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
 
-    listData.sort((a, b) => b.date - a.date); // sort DESC
+    if (sortDocDate === 'ASC') {
+      listData.sort((a, b) => a.date - b.date); // sort ASC
+    } else {
+      listData.sort((a, b) => b.date - a.date); // sort DESC
+    }
+
     return {
       metadata: {
         page: page,

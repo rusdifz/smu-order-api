@@ -592,8 +592,16 @@ export class TypeOrmOrderReadRepository
     identity: UserIdentity,
     filter: {
       docNo?: string;
+      statuses?: OrderStatus[];
     },
-    options?: { limit?: number; page?: number },
+    sort: {
+      docDate?: string;
+      qty?: string;
+    },
+    options?: {
+      limit?: number;
+      page?: number;
+    },
   ): Promise<any> {
     const limit = options?.limit || DEFAULT_QUERY_LIMIT;
     const page = options?.page || 1;
@@ -603,14 +611,28 @@ export class TypeOrmOrderReadRepository
       .andWhere('order.customerId = :customerId', {
         customerId: identity.externalId,
       })
-      .addOrderBy('order.documentDate', 'DESC')
-      .andWhere('order.deletedAt IS NULL')
-      .andWhere('order.status = :status', { status: OrderStatus.CONFIRMED });
+      .andWhere('order.deletedAt IS NULL');
+
+    if (filter && filter.statuses && filter.statuses.length > 0) {
+      queryAll.andWhere('order.status IN (:...statuses)', {
+        statuses: filter.statuses,
+      });
+    }
+    else {
+      queryAll.andWhere('order.status = :status', { status: OrderStatus.CONFIRMED });
+    }
 
     if (filter && filter.docNo) {
       queryAll.andWhere('order.documentNumber = :docNo', {
         docNo: filter.docNo,
       });
+    }
+
+    if (sort && sort.docDate) {
+      queryAll.addOrderBy('order.documentDate', sort.docDate as 'ASC' | 'DESC');
+    }
+    else{
+      queryAll.addOrderBy('order.documentDate', 'ASC');
     }
 
     const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
@@ -650,10 +672,18 @@ export class TypeOrmOrderReadRepository
 
       const headerIds = headers.map((h) => h.id);
 
-      const rawDetails = await this.dataSource
+      const rawDetailsQB = this.dataSource
         .createQueryBuilder(TypeOrmOrderItemEntity, 'detail')
-        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds })
-        .getMany();
+        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds });
+
+      if (sort && sort.qty) {
+        rawDetailsQB.addOrderBy('detail.total_bought', sort.qty as 'ASC' | 'DESC');
+      }
+      else{
+        rawDetailsQB.addOrderBy('detail.total_bought', 'ASC');
+      }
+
+      const rawDetails = await rawDetailsQB.getMany();
 
       // Map details and inject doc_type from matching header
       const details = rawDetails.map((detail) => {
@@ -699,6 +729,11 @@ export class TypeOrmOrderReadRepository
     identity: UserIdentity,
     filter: {
       docNo?: string;
+      statuses?: OrderStatus[];
+    },
+    sort?: {
+      docDate?: string;
+      qty?: string;
     },
     options?: { limit?: number; page?: number },
   ): Promise<any> {
@@ -710,16 +745,29 @@ export class TypeOrmOrderReadRepository
       .andWhere('order.customerId = :customerId', {
         customerId: identity.externalId,
       })
-      .addOrderBy('order.documentDate', 'DESC')
-      .andWhere('order.deletedAt IS NULL')
-      .andWhere('order.status NOT IN (:...statuses)', {
-        statuses: [OrderStatus.CONFIRMED, OrderStatus.NOT_CONFIRMED],
+      .andWhere('order.deletedAt IS NULL');
+
+    
+    if (filter && filter.statuses && filter.statuses.length > 0) {
+      queryAll.andWhere('order.status IN (:...statuses)', {
+        statuses: filter.statuses,
       });
+    }
+    else {
+      queryAll.andWhere('order.status = :status', { status: OrderStatus.NOT_CONFIRMED });
+    }
 
     if (filter && filter.docNo) {
       queryAll.andWhere('order.documentNumber = :docNo', {
         docNo: filter.docNo,
       });
+    }
+
+    if (sort && sort.docDate) {
+      queryAll.addOrderBy('order.documentDate', sort.docDate as 'ASC' | 'DESC');
+    }
+    else{
+      queryAll.addOrderBy('order.documentDate', 'ASC');
     }
 
     const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
@@ -760,10 +808,18 @@ export class TypeOrmOrderReadRepository
 
       const headerIds = headers.map((h) => h.id);
 
-      const rawDetails = await this.dataSource
+      const rawDetailsQB = this.dataSource
         .createQueryBuilder(TypeOrmOrderItemHistoryEntity, 'detail')
-        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds })
-        .getMany();
+        .where('detail.m_order_header_id IN (:...headerIds)', { headerIds });
+
+      if (sort && sort.qty) {
+        rawDetailsQB.addOrderBy('detail.total_bought', sort.qty as 'ASC' | 'DESC');
+      }
+      else{
+        rawDetailsQB.addOrderBy('detail.total_bought', 'ASC');
+      }
+
+      const rawDetails = await rawDetailsQB.getMany();
 
       // Map details and inject doc_type from matching header
       const details = rawDetails.map((detail) => {

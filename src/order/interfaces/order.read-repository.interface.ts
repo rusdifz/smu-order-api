@@ -2,7 +2,7 @@ import { Collection, PaginatedCollection } from '@wings-corporation/core';
 import { UserIdentity } from '@wings-online/common';
 import { ParameterValue } from '@wings-online/parameter/interfaces';
 
-import { OrderState } from '../order.constants';
+import { OrderState, OrderStatus } from '../order.constants';
 import { OrderReadModel } from '../read-models';
 import { ListOrderReadModel } from '../read-models/list-order.read-model';
 
@@ -75,6 +75,10 @@ export interface IOrderReadRepository {
     identity: UserIdentity,
     filter?: {
       docNo?: string;
+      statuses?: OrderStatus[];
+    },
+    sort?: {
+      docDate?: string;
     },
     options?: { limit?: number; page?: number },
   ): Promise<any>;
@@ -83,6 +87,10 @@ export interface IOrderReadRepository {
     identity: UserIdentity,
     filter?: {
       docNo?: string;
+      statuses?: OrderStatus[];
+    },
+    sort?: {
+      docDate?: string;
     },
     options?: { limit?: number; page?: number },
   ): Promise<any>;

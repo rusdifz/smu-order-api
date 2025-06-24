@@ -12,4 +12,7 @@ export class ListOrdersReturnQueryDto extends CursorPaginationQueryDto {
 
   @JoiSchema(Joi.string().optional())
   readonly docNo: string;
+  
+  @JoiSchema(Joi.string().valid('ASC', 'DESC').default('ASC').optional())
+  readonly sortDocDate: string;
 }

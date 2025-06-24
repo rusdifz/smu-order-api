@@ -6,6 +6,8 @@ export class ListMissingGoodsQueryProps {
   readonly docNo?: string;
   readonly page?: number;
   readonly limit?: number;
+  readonly sortDocDate?: string;
+  readonly status?: string;
 }
 
 export class ListMissingGoodsQuery
