@@ -13,6 +13,17 @@ export interface IOrderWriteRepository {
     identity: UserIdentity,
     isDummy: boolean,
   ): Promise<OrderAggregate | undefined>;
+  
+  /**
+   *
+   * @param id
+   * @param identity
+   */
+  getByRefId(
+    id: number,
+    identity: UserIdentity,
+    isDummy: boolean,
+  ): Promise<OrderAggregate | undefined>;
 
   /**
    *

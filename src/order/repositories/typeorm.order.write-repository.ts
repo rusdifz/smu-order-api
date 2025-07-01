@@ -38,6 +38,25 @@ export class TypeOrmOrderWriteRepository implements IOrderWriteRepository {
     return entity ? this.factory.reconstitute(entity, id) : undefined;
   }
 
+  async getByRefId(
+    id: number,
+    identity: UserIdentity,
+    isDummy: boolean,
+  ): Promise<OrderAggregate | undefined> {
+    const entity = await this.dataSource
+      .createQueryBuilder(
+        isDummy ? TypeOrmOrderHeaderDummyEntity : TypeOrmOrderHeaderEntity,
+        'order',
+      )
+      .where('order.refId = :id', { id })
+      .andWhere('order.customerId = :externalId', {
+        externalId: identity.externalId,
+      })
+      .getOne();
+
+    return entity ? this.factory.reconstitute(entity, id) : undefined;
+  }
+
   async save(order: OrderAggregate, isDummy: boolean): Promise<void> {
     if (!order.isDirty) return;
 
