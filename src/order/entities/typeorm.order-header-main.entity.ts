@@ -214,4 +214,7 @@ export class TypeOrmOrderHeaderMainEntity {
     (tracking) => tracking.orderMain,
   )
   readonly trackings?: TypeOrmTrackingStatusEntity[];
+
+  @Column()
+  readonly refId: string;
 }
