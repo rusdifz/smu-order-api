@@ -235,4 +235,7 @@ export class TypeOrmOrderHeaderHistoryEntity {
   @OneToOne(() => TypeOrmBillingHeaderEntity, (billing) => billing.orderHistory)
   @JoinColumn({ name: 'sales_order_code', referencedColumnName: 'soNumber' })
   readonly billing: TypeOrmBillingHeaderEntity;
+
+  @Column()
+  readonly refId: string;
 }
