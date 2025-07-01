@@ -45,6 +45,14 @@ export class ProcessOrderHandler
 
     await this.repository.save(order, isCustomerDummy);
 
+
+    const orderTKG = await this.repository.getByRefId(id, identity, isCustomerDummy);
+    if(orderTKG){
+      // optional: process TKG order if it exists
+      orderTKG.process();
+      await this.repository.save(orderTKG, isCustomerDummy);
+    }
+
     this.logger.trace(`END`);
   }
 }
