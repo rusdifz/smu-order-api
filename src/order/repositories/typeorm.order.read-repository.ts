@@ -632,7 +632,7 @@ export class TypeOrmOrderReadRepository
       queryAll.addOrderBy('order.documentDate', sort.docDate as 'ASC' | 'DESC');
     }
     else{
-      queryAll.addOrderBy('order.documentDate', 'ASC');
+      queryAll.addOrderBy('order.documentDate', 'DESC');
     }
 
     const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
@@ -767,7 +767,7 @@ export class TypeOrmOrderReadRepository
       queryAll.addOrderBy('order.documentDate', sort.docDate as 'ASC' | 'DESC');
     }
     else{
-      queryAll.addOrderBy('order.documentDate', 'ASC');
+      queryAll.addOrderBy('order.documentDate', 'DESC');
     }
 
     const queryLimit = queryAll.take(limit).skip((page - 1) * limit);
