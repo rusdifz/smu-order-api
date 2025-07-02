@@ -98,6 +98,22 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
       status: OrderStatus.CANCELLED_BY_CUSTOMER,
     });
 
+    const [orderTKGs] = await Promise.all([
+      this.repository.getByRefId(id, identity, isCustomerDummy),
+    ]);
+
+    if (orderTKGs) {
+      // optional: process TKG order if it exists
+      for (const orderTKG of orderTKGs) {
+        orderTKG.change(duration, false);
+        await this.repository.save(orderTKG, isCustomerDummy);
+        await this.legacyOrderService.changeOrderStatus({
+          docNumber: orderTKG.documentNumber,
+          status: OrderStatus.CANCELLED_BY_CUSTOMER,
+        });
+      }
+    }
+
     const events = order.flushEvents();
     const result = new ChangeOrderResult(events);
 

@@ -42,8 +42,8 @@ export class TypeOrmOrderWriteRepository implements IOrderWriteRepository {
     id: number,
     identity: UserIdentity,
     isDummy: boolean,
-  ): Promise<OrderAggregate | undefined> {
-    const entity = await this.dataSource
+  ): Promise<OrderAggregate[] | undefined> {
+    const entities = await this.dataSource
       .createQueryBuilder(
         isDummy ? TypeOrmOrderHeaderDummyEntity : TypeOrmOrderHeaderEntity,
         'order',
@@ -52,9 +52,14 @@ export class TypeOrmOrderWriteRepository implements IOrderWriteRepository {
       .andWhere('order.customerId = :externalId', {
         externalId: identity.externalId,
       })
-      .getOne();
+      .getMany();
+    
+    const results : OrderAggregate[] = [];
+    for (const entity of entities) {
+      results.push(this.factory.reconstitute(entity, id));
+    }
 
-    return entity ? this.factory.reconstitute(entity, id) : undefined;
+    return results.length > 0 ? results : undefined;
   }
 
   async save(order: OrderAggregate, isDummy: boolean): Promise<void> {
