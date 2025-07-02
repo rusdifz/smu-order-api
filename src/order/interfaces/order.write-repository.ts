@@ -23,7 +23,7 @@ export interface IOrderWriteRepository {
     id: number,
     identity: UserIdentity,
     isDummy: boolean,
-  ): Promise<OrderAggregate | undefined>;
+  ): Promise<OrderAggregate[] | undefined>;
 
   /**
    *
