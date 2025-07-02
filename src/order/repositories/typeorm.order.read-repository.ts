@@ -676,13 +676,6 @@ export class TypeOrmOrderReadRepository
         .createQueryBuilder(TypeOrmOrderItemEntity, 'detail')
         .where('detail.m_order_header_id IN (:...headerIds)', { headerIds });
 
-      if (sort && sort.qty) {
-        rawDetailsQB.addOrderBy('detail.total_bought', sort.qty as 'ASC' | 'DESC');
-      }
-      else{
-        rawDetailsQB.addOrderBy('detail.total_bought', 'ASC');
-      }
-
       const rawDetails = await rawDetailsQB.getMany();
 
       // Map details and inject doc_type from matching header
