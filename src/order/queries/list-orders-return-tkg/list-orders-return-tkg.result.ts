@@ -94,8 +94,6 @@ export class ListOrdersReturnTkgResult {
         listData.push(data);
     }
     for (const item of propsOrderWO.data) {
-      if(item?.details) continue;
-
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] == item?.header?.status,
@@ -103,7 +101,7 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: item?.details[0].returnReason,
+        reason: item?.details[0]?.returnReason,
         order_tkg_in: item.details
           ?.filter(
             (item) =>
@@ -139,8 +137,6 @@ export class ListOrdersReturnTkgResult {
     }
 
     for (const item of propsOrderWOHist.data) {
-      if(item?.details) continue;
-
       const data = {
         status: Object.keys(OrderStatus).find(
           (key) => OrderStatus[key] === item?.header?.status,
@@ -148,7 +144,7 @@ export class ListOrdersReturnTkgResult {
         statusCode: item?.header?.status,
         docNumber: item?.header?.documentNumber,
         date: Math.floor(new Date(item?.header?.documentDate).getTime() / 1000),
-        reason: item.details[0].returnReason,
+        reason: item?.details[0]?.returnReason,
         order_tkg_in: item.details
           ?.filter(
             (item) =>
