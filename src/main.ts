@@ -27,7 +27,7 @@ import { AppModule } from './app.module';
 import { JsonSerializerInterceptor, QueryStringPipe } from './common/';
 
 tracer.init({
-  service: 'wo-identity-service',
+  service: 'wo-order-service',
   logInjection: true,
   runtimeMetrics: true,
   startupLogs: true,
