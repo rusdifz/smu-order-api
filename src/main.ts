@@ -1,3 +1,4 @@
+import tracer from 'dd-trace';
 import fastifyXray from 'fastify-xray';
 import helmet from 'helmet';
 import { kebabCase } from 'lodash';
@@ -24,6 +25,13 @@ import { getXRayInstance } from '@wings-corporation/nest-xray';
 import { ServiceName } from './app.constants';
 import { AppModule } from './app.module';
 import { JsonSerializerInterceptor, QueryStringPipe } from './common/';
+
+tracer.init({
+  service: 'wo-identity-service',
+  logInjection: true,
+  runtimeMetrics: true,
+  startupLogs: true,
+});
 
 async function bootstrap() {
   const adapter = FastifyAdapter.create({
