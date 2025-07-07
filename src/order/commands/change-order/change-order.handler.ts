@@ -94,8 +94,7 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
     await this.repository.save(order, isCustomerDummy);
 
     const orderTKGs = await this.repository.getByRefId(id, identity, isCustomerDummy);
-      docNumber: order.documentNumber,
-
+    
     if (orderTKGs) {
       // optional: process TKG order if it exists
       for (const orderTKG of orderTKGs) {
