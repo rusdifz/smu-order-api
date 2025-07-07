@@ -99,8 +99,8 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
       // optional: process TKG order if it exists
       for (const orderTKG of orderTKGs) {
         orderTKG.change(duration, false);
-        await this.repository.save(orderTKG, isCustomerDummy);
-        await this.legacyOrderService.changeOrderStatus({
+        this.repository.save(orderTKG, isCustomerDummy);
+        this.legacyOrderService.changeOrderStatus({
           docNumber: orderTKG.documentNumber,
           status: OrderStatus.CANCELLED_BY_CUSTOMER,
         });
