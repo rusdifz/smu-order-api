@@ -56,7 +56,7 @@ export class TypeOrmOrderWriteRepository implements IOrderWriteRepository {
     
     const results : OrderAggregate[] = [];
     for (const entity of entities) {
-      results.push(this.factory.reconstitute(entity, id));
+      results.push(this.factory.reconstitute(entity, entity.id));
     }
 
     return results.length > 0 ? results : undefined;

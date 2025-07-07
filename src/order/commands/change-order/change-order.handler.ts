@@ -93,14 +93,8 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
 
     await this.repository.save(order, isCustomerDummy);
 
-    await this.legacyOrderService.changeOrderStatus({
+    const orderTKGs = await this.repository.getByRefId(id, identity, isCustomerDummy);
       docNumber: order.documentNumber,
-      status: OrderStatus.CANCELLED_BY_CUSTOMER,
-    });
-
-    const [orderTKGs] = await Promise.all([
-      this.repository.getByRefId(id, identity, isCustomerDummy),
-    ]);
 
     if (orderTKGs) {
       // optional: process TKG order if it exists
@@ -113,6 +107,11 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
         });
       }
     }
+
+    await this.legacyOrderService.changeOrderStatus({
+      docNumber: order.documentNumber,
+      status: OrderStatus.CANCELLED_BY_CUSTOMER,
+    });
 
     const events = order.flushEvents();
     const result = new ChangeOrderResult(events);
