@@ -4,12 +4,7 @@
 export const ServiceName = 'order-api';
 export const ServiceReversedFQDN = 'com.online.wings.order.api';
 export const LEGACY_ORDER_DEFAULT_TIMEZONE = 'Asia/Jakarta';
-// export const RETAIL_S_GROUP = '63';
-export enum RETAIL_S_GROUP {
-  // Initially empty, will be populated dynamically
-  ECC = '',//'63',
-  S4 = '',//'R;RG;S',
-}
+export const RETAIL_S_GROUP = ''; // 63
 export const GlobalAdvisoryLockIdentifier = `order`;
 
 export const EVENTBRIDGE_CLIENT_TOKEN = 'EVENTBRIDGE_CLIENT_TOKEN';

@@ -14,7 +14,7 @@ import { LoggerModule, XRayLogger } from '@wings-corporation/nest-pino-logger';
 import { TracingModule, XRAY_CLIENT } from '@wings-corporation/nest-xray';
 import { HealthModule, TypeOrmPinoLogger } from '@wings-online/common';
 
-import { CONNECTIONNAME_DB_S4, EVENTBRIDGE_CLIENT_TOKEN, RETAIL_S_GROUP, S3_CLIENT_TOKEN } from './app.constants';
+import { EVENTBRIDGE_CLIENT_TOKEN, RETAIL_S_GROUP, S3_CLIENT_TOKEN } from './app.constants';
 import { AuthService } from './auth';
 import { TypeOrmUserInfoEntity } from './auth/entities/typeorm.user-info.entity';
 import { TypeOrmUserEntity } from './auth/entities/typeorm.user.entity';
@@ -25,9 +25,6 @@ import { OrderModule } from './order';
 import { ParameterKeys } from './parameter/parameter.constants';
 import { ParameterModule } from './parameter/parameter.module';
 import { ParameterService } from './parameter/parameter.service';
-import { ParameterS4Keys } from './parameters4/parameters4.constants';
-import { ParameterS4Module } from './parameters4/parameters4.module';
-import { ParameterS4Service } from './parameters4/parameters4.service';
 import {
   AuthModuleOptionsProvider,
   CacheManagerOptionsProvider,
@@ -35,7 +32,6 @@ import {
   EventBusFactoryProvider,
   S3ClientFactoryProvider,
   TypeOrmModuleOptionsProvider,
-  TypeOrmModuleOptionsS4Provider
 } from './providers';
 
 @Module({
@@ -61,23 +57,11 @@ import {
       extraProviders: [TypeOrmPinoLogger],
       useClass: TypeOrmModuleOptionsProvider,
     }),
-    TypeOrmModule.forRootAsync({
-      name: CONNECTIONNAME_DB_S4,
-      inject: [ConfigService, TypeOrmPinoLogger, XRAY_CLIENT],
-      extraProviders: [TypeOrmPinoLogger],
-      useClass: TypeOrmModuleOptionsS4Provider,
-    }),
     TypeOrmModule.forFeature([TypeOrmUserEntity, TypeOrmUserInfoEntity]),
     MutexModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connectionString: config.getOrThrow('PG_DATABASE_WRITE_URL'),
-      }),
-    }),
-    MutexModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        connectionString: config.getOrThrow('PG_DATABASE_WRITE_URL_S4'),
       }),
     }),
     EventBusModule.forRootAsync({
@@ -111,7 +95,6 @@ import {
     }),
     InvoiceModule,
     ParameterModule.forRoot(),
-    ParameterS4Module.forRoot(),
     ScheduleModule.forRoot(),
   ],
   providers: [
@@ -130,17 +113,13 @@ import {
 export class AppModule implements OnApplicationBootstrap {
   constructor(
     private readonly parameterService: ParameterService,
-    private readonly parameterS4Service: ParameterS4Service
   ) {}
 
   async onApplicationBootstrap() {
     await this.parameterService.loadParameters();
-    await this.parameterS4Service.loadParameters();
 
     type RETAIL_S_GROUP = typeof RETAIL_S_GROUP[keyof typeof RETAIL_S_GROUP];
     const custGroupRetail = await this.parameterService.getOne(ParameterKeys.CUST_GROUP_RETAIL);
-    const custGroupRetailS4 = await this.parameterS4Service.getOne(ParameterS4Keys.CUST_GROUP_RETAIL);
-    (RETAIL_S_GROUP as any).ECC = custGroupRetail ? custGroupRetail.value : null;
-    (RETAIL_S_GROUP as any).S4 = custGroupRetailS4 ? custGroupRetailS4.value : null;
+    (RETAIL_S_GROUP as any) = custGroupRetail ? custGroupRetail.value : null;
   }
 }

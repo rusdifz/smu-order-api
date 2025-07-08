@@ -20,10 +20,6 @@ export class IdentityUtil {
   }
 
   public static isRetailS(org: Organization, group: string): boolean {
-    return org != 'WS' && group === RETAIL_S_GROUP.ECC;
-  }
-
-  public static isRetailSS4(org: Organization, group: string): boolean {
-    return org != 'WS' && group === RETAIL_S_GROUP.S4;
+    return org != 'WS' && group === RETAIL_S_GROUP;
   }
 }
