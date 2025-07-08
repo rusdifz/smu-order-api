@@ -107,7 +107,7 @@ export class ChangeOrderHandler extends CommandHandlerWithMutex<
       }
     }
 
-    await this.legacyOrderService.changeOrderStatus({
+    this.legacyOrderService.changeOrderStatus({
       docNumber: order.documentNumber,
       status: OrderStatus.CANCELLED_BY_CUSTOMER,
     });
