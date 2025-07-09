@@ -618,9 +618,6 @@ export class TypeOrmOrderReadRepository
         statuses: filter.statuses,
       });
     }
-    else {
-      queryAll.andWhere('order.status = :status', { status: OrderStatus.CONFIRMED });
-    }
 
     if (filter && filter.docNo) {
       queryAll.andWhere('order.documentNumber = :docNo', {
@@ -745,9 +742,6 @@ export class TypeOrmOrderReadRepository
       queryAll.andWhere('order.status IN (:...statuses)', {
         statuses: filter.statuses,
       });
-    }
-    else {
-      queryAll.andWhere('order.status = :status', { status: OrderStatus.NOT_CONFIRMED });
     }
 
     if (filter && filter.docNo) {
