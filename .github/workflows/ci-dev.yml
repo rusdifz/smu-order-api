@@ -61,8 +61,8 @@ jobs:
         run: |
           docker build \
             --build-arg NPM_GITHUB_TOKEN=${{ secrets.NPM_GITHUB_TOKEN }} \
-            -t 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:${{ env.GIT_HASH }} .
-          docker push 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:${{ env.GIT_HASH }}
+            -t 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:latest .
+          docker push 200748807270.dkr.ecr.ap-southeast-3.amazonaws.com/dev-wo-order-api:latest
 
       - name: Run ECS update
         env:
@@ -71,7 +71,7 @@ jobs:
           CI_AWS_ECS_CLUSTER: dev-wo-order-cluster
           CI_AWS_ECS_SERVICE: dev-wo-order-api
           CI_AWS_ECS_TASK_DEFINITION: dev-wo-order-api-task
-          VERSION: ${{ env.GIT_HASH }}
+          VERSION: latest
         run: |
           chmod +x ci/bin/ecs
           ./ci/bin/ecs update-task-definition
