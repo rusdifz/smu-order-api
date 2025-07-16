@@ -22,16 +22,12 @@ export class ListMissingGoodsResult {
               0,
               Math.floor(new Date(item.header.changedDate).getTime() / 1000),
             ),
-            itemsMissing: item.header.alerts.map((alert) => {
+            itemsMissing: item.details.map((detail) => {
               return {
-                ticket: alert.alertNo,
-                productDesc: item.details.find(
-                  (as) => as.alertNo === alert.alertNo,
-                )?.produkDesc,
-                qty: item.details.find((as) => as.alertNo === alert.alertNo)
-                  ?.jumlahSelisih,
-                uom: item.details.find((as) => as.alertNo === alert.alertNo)
-                  ?.uom,
+                ticket: item.header.alertNo,
+                productDesc: detail.produkDesc,
+                qty: detail.jumlahSelisih,
+                uom: detail.uom,
                 problem: item.header.detailProblem,
                 solution: item.header.solutions.find(
                   (as) => as.alertNo === item.header.alertNo,
