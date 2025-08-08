@@ -51,18 +51,16 @@ export class TypeOrmPinoLogger implements Logger {
   }
 
   log(level: 'log' | 'info' | 'warn', message: any) {
-    let logFn;
     switch (level) {
       case 'info':
-        logFn = this.logger.info;
+        this.logger.info(message);
         break;
       case 'warn':
-        logFn = this.logger.warn;
+        this.logger.warn(message);
         break;
       default:
-        logFn = this.logger.debug;
+        this.logger.debug(message);
         break;
     }
-    logFn(message);
   }
 }
